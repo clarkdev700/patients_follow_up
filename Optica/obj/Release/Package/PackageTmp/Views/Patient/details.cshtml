@@ -1,0 +1,64 @@
+﻿@model Optica.Models.Patient
+@{
+    ViewBag.Title = "details";
+    ViewBag.Titre = "Patient";
+    var titre = "Détails";
+}
+
+@section filedeNavigation {
+    <li><a href="@Url.RouteUrl("__patientIndex")">Patient</a></li>
+    <li class="active">@titre</li>
+}
+
+<div class="row">
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 style="text-decoration:underline; font-style:italic">@titre</h3>
+        </div>
+        <div class="box-body" style="font-size:15px;">
+            <div class="row">
+                <span class="col-sm-2">N&ordm; matricule :</span>
+                <span>@Model.NumMat</span>
+            </div>
+            <div class="row">
+                <span class="col-sm-2">Nom :</span>
+                <span>@Model.Nom</span>
+            </div>
+            <div class="row">
+                <span class="col-sm-2">Pr&eacute;noms :</span>
+                <span>@Model.Prenom</span>
+            </div>
+            <div class="row">
+                <span class="col-sm-2">Date de naissance:</span>
+                <span>@(Model.DateNaissance == null ? "N/A" : Model.DateNaissance.Value.ToString("dd/MM/yyyy")) </span>
+            </div>
+            <div class="row">
+                <span class="col-sm-2">Lieu de naissance :</span>
+                <span>@(Model.LieuNaissance != null ? Model.LieuNaissance : "N/A")</span>
+            </div>
+            <div class="row">
+                <span class="col-sm-2">Sexe :</span>
+                <span>@(Model.Sexe == "F" ? "Feminin" : "Masculin")</span>
+            </div>
+            <div class="row">
+                <span class="col-sm-2">Profession :</span>
+                <span>@(Model.Profession != null ? Model.Profession : "N/A")</span>
+            </div>
+            <div class="row">
+                <span class="col-sm-2">Contact :</span>
+                <span>@(Model.Contact != null ? Model.Contact : "N/A")</span>
+            </div>
+            <div class="row">
+                <span class="col-sm-2">Email :</span>
+                <span>@(Model.Email != null ? Model.Email : "N/A")</span>
+            </div>
+            <div class="row">
+                <span class="col-sm-2">Adresse :</span>
+                <span>@(Model.Adresse != null ? Model.Adresse : "N/A")</span>
+            </div>
+            <span class="col-sm-2">Date d&prime;inscription :</span>
+            <span>@Model.DateEnreg.ToString("dd/MM/yyyy")</span>
+        </div>
+    </div>
+</div>
+

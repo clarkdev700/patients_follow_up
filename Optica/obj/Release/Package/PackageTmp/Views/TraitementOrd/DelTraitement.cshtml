@@ -1,0 +1,40 @@
+﻿@model Optica.Models.Traitement
+@{
+    ViewBag.Title = "Annuler un traitement";
+    ViewBag.Titre = "Traitement patient";
+    string titre = "Suppression de traitement";
+}
+
+@section filedeNavigation {
+    <li><a href="@Url.RouteUrl("__patientIndex")">Patient</a></li>
+    <li><a href="@Url.RouteUrl("_historiqueTraitement", new { id = @Model.DossierPat.PatientId})">Historique de traitement</a></li>
+    <li class="active">@titre</li>
+}
+
+<div class="box box-primary">
+    <div class="box-header">
+        <h4><u>@titre</u></h4>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-9"></div>
+            <div class="col-sm-3">
+                @Html.Partial("~/Views/Patient/InfoPatient.cshtml", Model.DossierPat.Patient)
+            </div>
+        </div>
+        <div class="row">
+            @using (Html.BeginForm("DeleteTraitement", "TraitementOrd", new { id = @Model.Id }, FormMethod.Post, new { @class = "" })) 
+            {
+               <div class="form-group">
+                   <p class="alert alert-danger" style="font-size:15px;">Vous &ecirc;tes sur le point d&prime;annuler le traitement <strong>Ref#@Model.DateTrait.ToString("dd" + Model.Id + "MM").</strong> Voulez vous vraiment proceder &agrave; la suppression du traitement?
+                   </p>
+                   <div class="form-group">
+                       <input type="submit" value="Oui" class="btn btn-default btn-flat" />
+                       <a href="@Url.RouteUrl("_historiqueTraitement", new { id = @Model.DossierPat.PatientId})" class="btn btn-default btn-flat">Non</a>
+                   </div>
+               </div>              
+            } 
+        </div>
+    </div>
+</div>
+

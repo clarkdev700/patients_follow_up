@@ -1,0 +1,206 @@
+﻿@model Optica.ViewModels.AssuranceFacture
+@using Developpez.Dotnet;
+@{
+    ViewBag.Title = "factureAssurance";
+    Layout = "~/Views/Shared/_EnteteFacture.cshtml";
+}
+
+@*section EnteteDroite {
+    @Html.Partial("~/Views/Shared/_EntetePartial.cshtml", Model)
+}*@
+
+@{
+    int i = 0; 
+}
+
+@*<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title></title>
+        @Styles.Render("~/Content/css")
+        <style type="text/css">
+            .row {
+                margin-left:0;
+                margin-right:0;
+            }
+        </style>
+    </head>
+
+    <body>*@
+        @*<div class="container-fluid">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">*@
+                    <!--Head-->
+                    @*<div class="row">
+                        <div class="col-sm-offset-1 col-sm-1" >
+                            <img src="#" width="80" height="65" class="" />
+                        </div>
+                        <div class="col-sm-4">
+                            
+                            <div class="row text-center">
+                                <h4 class="" style="margin-top:0px; margin-bottom:5px;">CABINET MEDICAL D'OPHTAMOLOGIE</h4>
+                                <h3 class="" style="font-size:30px;margin-top:4px; margin-bottom:0px;"><strong>MAISON D&prime;ITALIE</strong></h3>
+                            </div>
+                            
+                            <div class="row text-center">
+                                <address>
+                                    <span class="col-sm-11 text-center" >Immeuble RAMCO TogoCellulaire</span><br />
+                                    <span class="col-sm-11 text-center">Avenue du 24 janvier 05 BP 263</span><br />
+                                    <span class="col-sm-11 text-center">Tel. 22 20 90 80</span><br />
+                                    <span class="col-sm-11 text-center">Arr&ecirc;t&eacute; N&ordm;0028/2012/MS/CAB/DGS/DES</span>
+                                </address>
+                            </div>
+                        </div>
+                        <div class="col-sm-offset-1 col-sm-4">
+                            <div class="row">
+                                <span class="col-xs-5">N&ordm;</span>
+                                <span>@Model.NumRecu</span>
+                            </div>
+                            <div class="row">
+                                <span class="col-xs-5">Agence</span>
+                                <span>@Model.Agence</span>
+                            </div>
+                            <div class="row">
+                                <span class="col-xs-5">Caissier(e)</span>
+                                <span>@Model.Caisse</span>
+                            </div>
+                            <div class="row">
+                                <span class="col-xs-5">Date</span>
+                                <span>@Model.Date.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />*@
+                    
+                  <!--Content-->
+                    @*<div class="row">
+                        <h4 class="text-center"><u>Re&ccedil;u de caisse</u></h4>
+                    </div>*@
+                    @while (i < 2)
+                    {
+                            //Entete
+                            //************************//
+                            <div class="row">
+                                <div class="col-sm-offset-2 col-sm-10" style="font-size:14px;">
+                                    <div class="row text-center">
+                                        @Html.Partial("~/Views/Shared/_EnteteAdressePartial.cshtml")
+                                        <div class="col-sm-4" style="/*float:left;width:41%;margin-left:2%;*/">
+                                            @Html.Partial("~/Views/Shared/_EntetePartial.cshtml", Model)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="col-sm-offset-1" />
+                            //***********************//
+                            <div class="row" style="margin:20px auto">
+                                <h4 class="text-center col-sm-11" style="font-size:x-large"><u>FACTURE N&ordm; @Model.NumRecu</u></h4>
+                            </div>
+                            <div class="row" style="margin-top: 5px; height: 475px; font-size: 16px;">
+                                @{ string titre = Enum.Format(typeof(Optica.Models.Titre), Model.patient.Titre, "g");}
+                                <div class="col-sm-offset-1 col-sm-11">
+                                    <div class="row">
+                                        <span class="col-xs-4">N&ordm; matricule :</span>
+                                        <span style="margin-left:-10%;"><strong>@Model.patient.NumMat</strong></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-xs-4">Nom :</span>
+                                        <span style="margin-left:-10%;"><strong>@titre &nbsp; @Model.patient.Nom &nbsp;@Model.patient.Prenom </strong></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-xs-4">Contact :</span>
+                                        <span style="margin-left:-10%;"><strong>@Model.patient.Contact</strong></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-xs-4">Assurance :</span>
+                                        @if (Model.Assurance != null)
+                                        {
+                                            <span style="margin-left:-10%;"><strong>@Model.Assurance.Nom</strong></span>
+                                        }
+                                        else
+                                        {
+                                            <span style="margin-left:-10%;">-</span>
+                                        }
+
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-xs-4">Acte m&eacute;dicale :</span>
+                                        <span style="margin-left:-10%;">
+                                            @{
+                                        int ArrLeng = 0, index = 0;
+                                        const char space = ',';
+                                        var acteArr = Model.ActeMedicaux.ToArray();
+                                        ArrLeng = acteArr.Length;
+                                        if (ArrLeng > 0)
+                                        {
+                                            while (index < ArrLeng)
+                                            {
+                                                <strong>@acteArr[index].ActeMedical.Code</strong>
+                                                if (ArrLeng - index > 1)
+                                                {
+                                                    @space;
+                                                }
+                                                index++;
+                                            }
+                                        }
+                                            }
+                                        </span>
+
+                                    </div>@*<hr />*@
+                                    <div class="row">
+                                        <span class="col-xs-4">Charge Patient :</span>
+                                        <span style="margin-left:-10%;">
+                                            <strong>
+                                                @Model.MontantPatient.ToString("N0", System.Globalization.CultureInfo.CurrentCulture)
+                                                @{
+                                            var mtp = NumberConverter.Spell((int)Model.MontantPatient);
+                                            mtp = mtp[0].ToString().ToUpper() + mtp.Substring(1);
+                                                }
+                                                (@mtp) FCFA
+                                            </strong>
+                                        </span>
+
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-xs-4">Montant :</span>
+                                        <span style="margin-left:-10%;">
+                                            <strong>
+                                                @Model.Montant.ToString("N0", System.Globalization.CultureInfo.CurrentCulture)
+                                                @{
+                                            var txt = NumberConverter.Spell((int)Model.Montant);
+                                            txt = txt[0].ToString().ToUpper() + txt.Substring(1);
+                                                }
+                                                (@txt) FCFA
+                                            </strong>
+                                        </span>
+
+                                    </div>
+                                    <div class="row" style="margin-top:80px;">
+                                        <div class="col-sm-4 pull-right">
+                                            <h4 style="font-size:16px;">Signature</h4>
+                                        </div>
+                                    </div>
+                                    @*<hr />*@
+                                </div>
+                            </div>
+                            @*<div class="row" style="margin-top:80px;margin-bottom:40px">
+                                <div class="col-sm-3 pull-right">
+                                    <h4>Signature</h4>
+                                </div>
+                            </div>*@
+                            i++;
+                            if (i == 1)
+                            {
+                            <hr style="margin-bottom:60px;" class="col-sm-offset-1" />
+                            }
+
+                    }
+
+                @*</div>
+            </div>
+        </div>*@
+    @*</body>
+</html>*@

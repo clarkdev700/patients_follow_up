@@ -1,0 +1,89 @@
+﻿@model Optica.Models.Patient
+@{
+    ViewBag.Title = "Index";
+    ViewBag.Titre = "Traitement";
+}
+
+@section filedeNavigation {
+        <li><a href="@Url.RouteUrl("__patientIndex")">Patient</a></li>
+        <li><a href="@Url.RouteUrl("_historiqueControlePatient", new { id = Model.Id})">Traitement</a></li>
+        <li class="active">historique de contrôle</li>
+    }
+<div class="box box-primary">
+    <div class="box-header"><h4 style="text-decoration:underline;">Historique de contrôle</h4></div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-9"></div>
+            <div class="col-sm-3">
+                @Html.Partial("~/Views/Patient/InfoPatient.cshtml", Model)
+            </div>
+        </div>
+        <hr style="margin:0px auto 0 auto;" />
+        <div class="row">
+            <p>@Html.ActionLink("Nouveau controle", "Add", new { id = Model.Id }, new { @class = "btn btn-primary btn-flat" })</p>
+        </div>
+        <div class="row">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Medecin trait.</th>
+                        <th>Date prev ctrl.</th>
+                        <th>Date ctrl eff.</th>
+                        <th>Retard</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int retard;}
+                    @if (ViewBag.dossiers != null && ViewBag.dossiers.Count > 0)
+                    {
+                        foreach (Optica.Models.DossierPat d in ViewBag.dossiers)
+                        {
+                            if (d.Statut == false && d.ControlePats.Count > 0)
+                            {
+                                
+                                foreach (Optica.Models.ControlePat c in d.ControlePats)
+                                {
+                                    <tr>
+                                        <td>@(c.Medecin.Nom + " " + c.Medecin.Prenoms)</td>
+                                        <td>@c.DateControle.ToString("dd/MM/yyyy")</td>
+                                        <td>@{var m = c.DateEffectuerControle != null ? c.DateEffectuerControle.Value.ToString("dd/MM/yyyy") : "---";}</td>
+                                        @if (c.DateEffectuerControle == null)
+                                        {
+                                             retard = (int) DateTime.Now.Subtract(c.DateControle).TotalDays;
+                                             if (retard > 0)
+                                             {
+                                                 <td><span style="color:red">@retard</span> jours</td>
+                                             }
+                                             else {<td>--</td> }
+
+                                        }
+                                        else { <td>--</td>}
+                                        
+                                        <td><a href="@Url.RouteUrl("_updateControlePatient", new { id = c.Id })" title="editer"><i class="glyphicon glyphicon-edit"></i></a></td>
+                                    </tr>
+                                }
+                            }
+                            else {
+                                <tr><td colspan="5" align="center" valign="middle" style="color:red;font-style:italic">Aucun controle n'est enregistré pour le patient</td></tr>
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="5" align="center" valign="middle" style="color:red;font-style:italic">Aucun controle n'est enregistré pour le patient</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#patient").addClass("active");
+        });
+    </script>
+}
+

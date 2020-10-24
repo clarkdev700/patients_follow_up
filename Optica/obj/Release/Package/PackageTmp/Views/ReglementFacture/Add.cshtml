@@ -1,0 +1,380 @@
+﻿@model Optica.Models.Payement
+@using System.Globalization
+@using System.IO
+@{
+    ViewBag.Title = "Add";
+}
+
+@section myHeadStyle {
+    <style type="text/css">
+        .pbody {
+            padding: 10px 0;
+        }
+        .titre {
+            padding-right: 5px;
+        }
+    </style>
+    }
+@{
+    string Action = "Add";
+    string titre = "Nouveau";
+    ViewBag.Titre = "Fiche de règlement";
+    if (Model != null && Model.Id > 0)
+    {
+        Action = "Update";
+        titre = "Edition";
+    }
+}
+
+@section filedeNavigation {
+        <li><a href="@Url.RouteUrl("__patientIndex")">Patient</a></li>
+        <li><a href="@Url.RouteUrl("_listeFacture", new { id = Model.Traitement.DossierPat.PatientId})">Liste de facture</a></li>
+        <li class="active">@titre</li>
+    }
+
+
+<div class="box box-primary">
+    <div class="box-header">
+        <h3 style="text-decoration:underline">@*Fiche de règlement<span style="font-style:italic; font-size:small;"><i class="glyphicon glyphicon-chevron-right"></i></span>*@ @titre</h3>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="row">
+                    @Html.Partial("~/Views/Patient/InfoPatient.cshtml", Model.Traitement.DossierPat.Patient)
+                </div>
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Traitement</div>
+                        <div class="panel-body pbody">
+                            <div class="row">
+                                <span class="col-xs-5 titre">Acte medical:</span>
+                                <span>
+                                    @{
+                                        int ArrLeng = 0, index = 0;
+                                        const string space = ", ";
+                                        var acteArr = Model.Traitement.ActeMedicaux.Where(x => x.Del == false).ToArray();
+                                        ArrLeng = acteArr.Length;
+                                        if (ArrLeng > 0)
+                                        {
+                                            while (index < ArrLeng)
+                                            {
+                                                <strong>@acteArr[index].ActeMedical.Code</strong>
+                                                if (ArrLeng - index > 1)
+                                                {
+                                                    @space;
+                                                }
+                                                index++;
+                                            }
+                                        }
+                                    }
+                                </span>
+                            </div>
+                            <div class="row">
+                                <span class="col-xs-5 titre">Montant Tot.</span>
+                                @{ float t = Model.Traitement.PrixAssur + Model.Traitement.PrixOrd ;}
+                                <span>@t.ToString("N0", CultureInfo.CurrentCulture)</span>
+                            </div>
+                            <div class="row">
+                                <span class="col-xs-5 titre">Montant Ass.</span>
+                                <span>@Model.Traitement.PrixAssur.ToString("N0",CultureInfo.CurrentCulture)</span>
+                            </div>
+                            <div class="row">
+                                <span class="col-xs-5 titre">Montant Pat.</span>
+                                <span>@Model.Traitement.PrixOrd.ToString("N0",CultureInfo.CurrentCulture)</span>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class=""></div>*@
+                </div>
+            </div>
+            <div class="col-xs-1"></div>
+            <div class="col-sm-4">
+                @using (Html.BeginForm(Action, "ReglementFacture", FormMethod.Post))
+                {
+                    <div class="form-group">
+                        @Html.Label("Date payement")
+                        <input type="date" name="DatePaye" value="@Model.DatePaye.ToString("yyyy-MM-dd")" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Type Règlement") &nbsp; &nbsp; <span class="text-danger" id="ErrTypePaye" hidden>Champ obligatoire</span>
+                        <select name="TypePaye" class="form-control" required id="TypePaye">
+                            <option value="null">--Choisir le mode de règlement--</option>
+                            @{
+                    if (Action == "Update" && Model.TypePaye == "Cheque")
+                    {
+                        <option value="Cheque" selected>Chèque</option>
+                    }
+                    else
+                    {
+                        <option value="Cheque">Chèque</option>
+                    }
+
+                    if (Action == "Update" && Model.TypePaye == "Espece")
+                    {
+                        <option value="Espece" selected>Espèce</option>
+                    }
+                    else
+                    {
+                        <option value="Espece">Espèce</option>
+                    }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Montant") &nbsp;&nbsp;<span class="text-danger" id="ErrMontant" hidden>Saisir un montant valide</span>
+                        @Html.TextBox("MontantPaye", Model.MontantPaye, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Info Chèque")
+                        @Html.TextBox("InfoCheque", Model.InfoCheque, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Valider" class="btn btn-sm" />
+                        <a href="@Url.RouteUrl("_listeFacture", new { id = Model.Traitement.DossierPat.PatientId})" class="btn btn-sm btn-default">Annuler</a>
+                    </div>
+                }
+            </div>
+            <div class=""></div>
+            <div class="col-sm-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Historique de règlement</div>
+                    <div class="panel-body pbody">
+                        <div class="row">
+                            <h5>
+                                <span class="col-xs-7 titre"><strong>Reste &agrave; payer</strong></span>
+                                @{
+                                    string r = null;
+                                    float mtt;
+                                    string origine = "patient";
+                                    if (ViewBag.Origine != null)
+                                    {
+                                        var asMtt = Model.Traitement.Payements.Where(x => x.SourcePaye == Optica.Models.Source.Assurance && x.Del == false).Sum(x => x.MontantPaye);
+                                        mtt = Model.Traitement.PrixAssur - asMtt @*Model.MontantPaye*@;
+                                        origine = "assurance";
+                                    }
+                                    else
+                                    {
+                                        mtt = Model.Traitement.PrixOrd - Model.Traitement.MontantPaye;
+                                    }
+                                    var temp = mtt;
+                                    r = mtt == 0 ? "Soldé" : temp.ToString("N0",CultureInfo.CurrentCulture);
+                                    
+
+                                }
+                                <span><strong data-bind="html:montant">@r</strong></span>
+                            </h5>
+                        </div>
+                        <div class="row" id="ReglementState">
+                            @{
+                                var sourcepaye = ViewBag.Origine == null ? Optica.Models.Source.Patient : Optica.Models.Source.Assurance;
+                                var _historiquePayements = Model.Traitement.Payements.Where(x => @*x.Del == false&& *@ x.SourcePaye == sourcepaye).ToList();
+}
+
+                            @if (_historiquePayements.Count > 0)
+                            {
+                                <ul style="list-style-type: none; margin-left: inherit;">
+                                    @foreach (var p in _historiquePayements/*Model.Traitement.Payements.Where(x => x.SourcePaye == sourcepaye && x.Del == false)*/.OrderByDescending(x => x.Id))
+                                    {
+                                        var _mttvers = p.MontantPaye.ToString("N0", CultureInfo.CurrentCulture);
+                                        <li style="margin-left:-27px;" id="@p.Id">
+                                            <span class="col-xs-5" style="margin-left:-15px;">@p.DatePaye.ToString("dd/MM/yyyy")</span>
+                                            <span class="col-xs-5" id="mtt_@p.Id"> 
+                                                @if (p.Del) { <del>@_mttvers</del>}
+                                                else {@Html.ActionLink(_mttvers, "Update", "ReglementFacture", new { id = p.Id, origine = origine == "assurance" ? "assurance" : null }, new { }) }
+                                             @*@Html.ActionLink(p.MontantPaye.ToString("N0", CultureInfo.CurrentCulture), "Update", "ReglementFacture", new { id = p.Id, origine = origine == "assurance" ? "assurance" : null }, new { })*@</span>
+                                            @*<span>&nbsp;&nbsp;<a href="@Url.RouteUrl("_recuFacturePatient", new { id = p.Id})" title="Imprimer le reçu de règlement"><i class="glyphicon glyphicon-print" style="color:darkslategrey"></i></a></span>|*@
+                                            @*{ 
+                                                string fichier = "Factp" + p.DatePaye.ToString("dd"+ p.Id+"MM")+".pdf";
+                                                var filePath = Server.MapPath(Path.Combine("~/Datadir/", fichier));
+                                                if (File.Exists(filePath))
+                                                {
+                                                    <span><a href="~/DataDir/@fichier" target="_blank"><i class="glyphicon glyphicon-print" style="color:darkslategrey"></i></a></span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-danger" title="Facture probablement supprimer."><i class="glyphicon glyphicon-remove-circle"></i></span>
+                                                }
+                                             }*@
+                                            
+                                            @if (!p.Del)
+                                            {
+                                                <span class="col-xs-1" style="margin-left:-25px;" data-bind="visible:statut" id="print_@p.Id">
+                                                    <a href="#" onclick="generateFacture(@p.TraitementId)">
+                                                        <i class="glyphicon glyphicon-print" style="color:darkslategrey"></i>
+                                                    </a>
+                                                </span>
+                                                <span class="" style="margin-left:2px;" id="rem_@p.Id">
+                                                    <a href="#" onclick="removeFacture(@p.Id, @p.MontantPaye)">
+                                                        <i class="glyphicon glyphicon-remove-circle text-danger"></i>
+                                                    </a>
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="" style="margin-left:2px;" id="rem_@p.Id">
+                                                    <a href="#" onclick="return false;"></a>
+                                                </span>
+                                            }
+                                            
+                                            <span id="img_@p.TraitementId" hidden><img src="~/DataDir/ajaxfacture.gif" /></span>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                @*if (ViewBag.Origine != null && Model.Traitement.PayeAssur == true)
+                                {
+                                    origine = "assurance";
+                                    <ul class="list-unstyled">
+                                        @foreach (var p1 in Model.Traitement.Payements.Where(x => x.SourcePaye == Optica.Models.Source.Assurance && x.Del == false).OrderByDescending(x => x.Id))
+                                        {
+                                            <li>
+                                                <span class="col-xs-6">@p1.DatePaye.ToString("dd/MM/yyyy")</span>
+                                                <span>@Html.ActionLink(p1.MontantPaye.ToString("N0",CultureInfo.CurrentCulture), "Update", "ReglementFacture", new { id = p1.Id, origine = "assurance" }, new { })</span>
+                                            </li>
+                                        }
+                                    </ul>
+                                    <h4 class="list-group"><span class="list-group-item list-group-item-info">Facture sold&eacute;</span></h4>
+                                }
+                                else
+                                {*@
+                                    <h5 style="text-align:center">Aucun Règlement effectué pour ce traitement</h5>
+                                @*}*@
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts { 
+       <script src="~/Scripts/knockout-3.2.0.js"></script>
+        <script type="text/javascript">
+            var mttUpdate = 0;
+    $(document).ready(function () {
+        $("#patient").addClass("active");
+        /*$("#ErrMontant").hide();
+        $("#ErrTypePaye").hide();*/
+        mttUpdate = "@mtt";
+        if ("@origine" == "assurance") {
+            vm.montant("@r");
+            vm.statut(false);
+        } else {
+            vm.montant("@r");
+        }
+
+    });
+
+    function removeFacture(e, mtt) {
+        if (e == null) {
+            return false;
+        } else {
+            if (confirm("Voulez vous vraiment supprimer le règlement")) {
+                var _url = "@Url.RouteUrl("_deletePayement", new { id = "id" })";
+                _url = _url.replace("id", e);
+                /*alert(_url);
+                $("#" + e).hide();
+                mttUpdate = parseFloat(mttUpdate, 10) + parseFloat(mtt, 10);
+                vm.montant(mttUpdate.toLocaleString());
+                alert(mttUpdate);
+                $("#ReglementState").append('<h5 style="text-align:center">Aucun Règlement effectué pour ce traitement</h5>');
+                alert(mttUpdate);
+                return false;*/
+                $.ajax({
+                    url: _url,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.statut == "OK") {
+                            //$("#" + e).hide();
+                            var space = '<span class="" style="margin-left:2px;"><a href="#" onclick="return false;"></a></span>';
+                            var space2 = '<span class="col-xs-1" style="margin-left:-25px;"><a href="#" onclick="return false;"> </a></span>';
+                            $("#mtt_" + e).html("<del>" + mtt + "</del>");
+                            $("#rem_" + e).html(space2); $("#print_" + e).html(space);
+                            mttUpdate = parseFloat(mttUpdate, 10) + parseFloat(mtt, 10);
+                            vm.montant(mttUpdate.toLocaleString());
+                            @*if (("@origine" != "assurance" && mttUpdate == "@Model.Traitement.PrixOrd") || ("@origine" == "assurance" && mttUpdate == "@Model.Traitement.PrixAssur")) {
+                                $("#ReglementState").append('<h5 style="text-align:center">Aucun Règlement effectué pour ce traitement</h5>');
+                            }*@
+                            if ("@Action" == "Update") {
+                                var _link = "@Url.RouteUrl("_listeFacture", new { id = "id"})";
+                                _link = _link.replace("id", "@Model.Traitement.DossierPat.PatientId");
+                                window.location = _link;
+                            }
+                        } else { alert("Impossible de supprimer ce règlement");}
+                    },
+                    error: function () {
+                        alert("une erreur s'est produite. \n Merci de ressayer plus tard.");
+                    }
+                });
+            } else {
+                return false;
+            }
+        }
+    }
+    //
+    function generateFacture(e) {
+        if (e == null) {
+            return false; /*reglement-facture/facture-patient*/
+        }
+        else {
+            alert("Traitement de generation de reçu en cours. \n Veuillez patienter un instant.");
+            $("#img_" + e).show();
+            $.ajax(
+                {
+                    url: "@Url.RouteUrl("_factureGenerator")",
+                    type: "GET",
+                    data: { _url: "patient_Recu", id: e, source: "patientRecu" },
+                    dataType: "json",
+                    success: function (d) {
+                        if (d.Result == "OK") {
+                            $("#img_" + e).hide();
+                            window.open("../../DataDir/recupatient.pdf");
+                        }
+                    },
+                    error: function () {
+                        alert("une erreur s'est produite. \n Merci de ressayer plus tard.");
+                    }
+                });
+        }
+    }
+
+    $("form").submit(function () {
+        var x1 = false, x2 = false, x3 = false;
+        var tot = parseFloat("@mtt", 10) + parseFloat("@Model.MontantPaye", 10);
+        if ("@Action" == "Update" && parseInt($("#MontantPaye").val()) > tot) {
+            x3 = true;
+            $("#ErrMontant").show();
+        } else {
+            if ("@Action" == "Add" && parseInt($("#MontantPaye").val()) > mttUpdate @*parseInt("@mtt")*@) {
+                @*alert("@mtt"); alert(mttUpdate);*@
+                x3 = true;
+                $("#ErrMontant").show();
+            }
+        }
+
+        //return false;
+        if (!parseInt($("#MontantPaye").val()) > 0) {
+            x1 = true;
+            $("#ErrMontant").show();
+        }
+        var modeRegl = $("#TypePaye").val();
+        if (modeRegl == "null") {
+            x2 = true;
+            $("#ErrTypePaye").show();
+        }
+
+        /*if (x1 == false) { $("#ErrMontant").hide(); } if (x2 == false) { $("#ErrTypePaye").hide(); } if (x3 == false) { $("#ErrMontant").hide(); }*/
+        if (x2 || x1 || x3) {
+            return false;
+        }
+
+    });
+    var vm = { montant: ko.observable(0), statut: ko.observable(true) };
+    ko.applyBindings(vm);
+</script>
+    }

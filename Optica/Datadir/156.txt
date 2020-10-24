@@ -1,0 +1,3 @@
+login: dgbikpi@ewitechnology.fr
+mdp: 3M14L6F2W
+serveur: ewitechnology.fr

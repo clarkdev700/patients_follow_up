@@ -1,0 +1,80 @@
+﻿@model  IEnumerable<Optica.Models.Patient>
+@{
+    ViewBag.Title = "Index";
+    ViewBag.Titre = "Liste des patients";
+}
+
+@section filedeNavigation{
+        <li class="active">Liste des patients</li>
+    }
+
+<div class="box box-primary">
+    <div class="box-header"></div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-3 pull-right">
+                @using (Html.BeginForm("Index", "Patient", FormMethod.Post))
+                {
+                    <div class="input-group">
+                        @Html.TextBox("q", null, new { @class = "form-control", placeholder = "Rechercher un patient..." })
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                        </span>
+                    </div>
+                }
+
+            </div>
+        </div>
+        <div class="row">
+            <p>@Html.ActionLink("Nouveau patient", "Add", "Patient", new { }, new { @class = "btn btn-primary btn-flat" })</p>
+        </div>
+        <div class="row">
+            <table class="table table-responsive table-striped">
+                <thead>
+                    <tr>
+                        <th>Num Matricule</th>
+                        <th>Nom</th>
+                        <th>Prenoms</th>
+                        <th>Contact</th>
+                        <th>E-mail</th>
+                        <th>Adresse</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@p.NumMat</td>
+                            <td>@p.Nom</td>
+                            <td>@p.Prenom</td>
+                            <td>@p.Contact</td>
+                            <td>@(p.Email!= null? p.Email:"-")</td>
+                            <td>@(p.Adresse != null?p.Adresse:"-")</td>
+                            <td><a href="@Url.Action("Update", new { id = p.Id})" title="Editer les informations"><i class="glyphicon glyphicon-edit"></i></a></td>
+                            <td><a href="@Url.Action("details", "Patient", new { id = p.Id })" title="fiche détaillé du patient"><i class="glyphicon glyphicon-user"></i></a></td>
+                            <td><a href="@Url.Action("Index", "TraitementOrd", new { id = p.Id})" title="Ouvrir une fiche de traitements"><i class="glyphicon glyphicon-flash"></i></a></td>
+                            <td><a href="@Url.Action("FacturesPatient", "ReglementFacture", new { id = p.Id})" title="Regler une facture"><i class="glyphicon glyphicon-list-alt"></i></a></td>
+                            <td><a href="@Url.Action("Index", "ControlePat", new { id = p.Id})" title="Ouvrir une fiche de controle"><i class="glyphicon glyphicon-calendar"></i></a></td>
+                            <td><a href="@Url.RouteUrl("_deletePatient", new { id = p.Id})" title="Supprimer un patient"><i class="glyphicon glyphicon-remove"></i></a></td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#patient").addClass("active");
+        });
+    </script>
+}

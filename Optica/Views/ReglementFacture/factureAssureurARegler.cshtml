@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "Factures d'assurance en attente";
+    ViewBag.Titre = "Factures d'assurance en attente";
+}
+@section filedeNavigation {
+        <li><a href="#">Administration</a></li>
+        <li class="active">Factures d'assurance &agrave; r&eacute;gl&eacute;</li>
+    }
+<div class="box box-primary">
+    <div class="box-header">@*<h4 style="text-decoration:underline;">Facture d'assureur en entente</h4>*@</div>
+    <div class="box-body">
+        <div class="row">
+            <table class="table table-responsive table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Nom Assureur</th>
+                        <th>Num Facture</th>
+                        <th>Nom patient</th>
+                        <th>Montant</th>
+                        <th>Règlement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{double mtt = 0, mttAss = 0;}
+                    @foreach (Optica.Models.Traitement t in ViewBag.ListeFact)
+                    {
+                        <tr>
+                            <td>@t.DateTrait.ToString("dd/MM/yyyy")</td>
+                            <td>@t.Assurance.Nom</td>
+                            <td>@("Ref#" + t.DateTrait.ToString("dd"+t.Id+"MM"))</td>
+                            <td>@(t.DossierPat.Patient.Nom + " " + t.DossierPat.Patient.Prenom)</td>
+                                @{
+                                    mttAss = t.PrixAssur - t.Payements.Where(x => x.Del == false && x.SourcePaye == Optica.Models.Source.Assurance).Sum(x => x.MontantPaye);
+                                }
+                            @*<td>@t.PrixAssur.ToString("N0", System.Globalization.CultureInfo.CurrentCulture)</td>*@
+                            <td>@mttAss.ToString("N0", System.Globalization.CultureInfo.CurrentCulture)</td>
+                            <td>@Html.ActionLink("Regler", "Add", "ReglementFacture", new { id = t.Id, origine = "assurance" }, new { })</td>
+                        </tr>
+                        mtt += mttAss;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr><th colspan="4">Montant Total</th><th colspan="2">@mtt.ToString("N0",System.Globalization.CultureInfo.CurrentCulture)</th></tr>
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+@*<div class="row">
+    <div class="col-sm-3">
+        <h4>Facture d'assureur en entente</h4>
+        <hr />
+    </div>
+    
+</div>*@
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#administration").addClass("active");
+            $("#lfar").addClass("active");
+        });
+    </script>
+}

@@ -1,0 +1,59 @@
+﻿@model  IEnumerable<Optica.ViewModels.ControlePrevu> 
+@{
+    ViewBag.Title = "ControlePatient";
+    ViewBag.Titre = "Contrôle de patient";
+}
+
+@section filedeNavigation {
+    <li><a href="#"></a>Administration</li>
+    <li class="active">Contrôle de patient pr&eacute;vu</li>
+}
+<div class="box box-primary">
+    <div class="box-header"></div>
+    <div class="box-body">
+        <div class="row">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nom patient</th>
+                        <th>Medecin traitant</th>
+                        <th>Date de controle</th>
+                        <th>Nbre jrs restant</th>
+                        <th>Retard</th>
+                        <th>Contact</th>
+                    </tr>
+                </thead>
+                <tbody id="tcorps">
+                    @foreach (var m in Model)
+                    {
+                        <tr>
+                            <td>@m.NomPatient</td>
+                            <td>@m.NomMedecin</td>
+                            <td>@m.DateControle.ToString("dd/MM/yyyy")</td>
+                            <td>@m.NbRestant</td>
+                            <td>
+                                @if (m.Retard != "--")
+                                {
+                                    <span style="color:red">@m.Retard</span><span>jrs</span>
+                                } 
+                                else 
+                                {
+                                    <span>@m.Retard</span>
+                                }
+                                                           </td>
+                            <td>@m.Contact</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#administration").addClass("active");
+            $("#lcp").addClass("active");
+        });
+    </script>
+}

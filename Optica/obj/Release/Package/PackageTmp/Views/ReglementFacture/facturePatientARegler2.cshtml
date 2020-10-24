@@ -1,0 +1,140 @@
+﻿@{
+    ViewBag.Title = "Factures de patient en attente de règlement";
+    @*ViewBag.Titre = "Factures de patient en entente de règlement";*@
+}
+
+
+@section filedeNavigation {
+    <li><a href="#">Administration</a></li>
+    <li class="active">Factures de patients &agrave; r&eacute;gler</li>
+}
+
+@section myHeadStyle{
+    @Styles.Render("~/Content/jqxStyle")
+}
+
+<div class="box box-primary">
+    <div class="box-header">
+
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div id="factureGrid"></div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    @Scripts.Render("~/Scripts/jqxBase")
+    @Scripts.Render("~/Scripts/jqxTable")
+
+    <script type="text/javascript">
+        function formatNumber(value) { return new Intl.NumberFormat("fr-FR").format(value); }
+        $(document).ready(function () {
+            var source = {
+                datatype: "json",
+                datafields: [
+                    { name: "Charge", type: 'float' },
+                    { name: "DateTraitement", type: 'string' },
+                    { name: "Date", type: 'date' },
+                    { name: "ResteApayer", type: 'float' },
+                    { name: "IdentitePatient", type: 'string' },
+                    { name: "RefFacture", type: 'string' },  
+                    { name: "Id", type:'int'}
+                ],
+                id: 'Id',
+                url: "@Url.RouteUrl("_getListeFacturePatient")"
+            };
+            var dataAdapter = new $.jqx.dataAdapter(source);
+            var cellrender = function (row, column, value, rowData) {
+                return "<span>" + formatNumber(value) + "</span>";
+            };
+            var cellRenderReglement = function (row, column, value, rowData) {
+                var mtt = formatNumber(value);
+                var link = "";
+                    var url = "@Url.RouteUrl("_addReglement", new { id = "id" })";
+                    url = url.replace("id", rowData.Id);
+                    link = '<a href="' + url + '"><span><i class="glyphicon glyphicon-usd"></i></span> Regler</a>';
+                
+                    return /*'<div><span>' + mtt + '</span>&nbsp;&nbsp;' +*/ link;
+            };
+            var getLocalization = function () {
+                var localizationobj = {};
+                localizationobj.pagerGoToPageString = "Page :";
+                localizationobj.pagershowrowsstring = "Ligne:";
+                localizationobj.pagerrangestring = " sur ";
+                localizationobj.pagerNextButtonString = "Suivant";
+                localizationobj.loadtext = "Chargement...";
+                localizationobj.filterSearchString = "Recherche:";
+                localizationobj.pagerPreviousButtonString = "Precedent";
+                return localizationobj;
+            };
+            //init jqxtable energyblue summer shinyblack
+            $("#factureGrid").jqxDataTable({
+                width: '100%',
+                theme: 'darkblue',
+                source: dataAdapter,
+                pageable: true,
+                filterable: true,
+                //groups: ['AssuranceNom'],
+                //filterMode: 'simple',
+                altRows: true,
+                pageSize: 20,
+                pagerMode: 'advanced',
+                sortable: true,
+                columnsResize: true,
+                pageSizeOptions: ['5', '10', '20', '25', '30', '35', '40'],
+                columnsResize: true,
+                localization: getLocalization(),
+                //agregate
+                showAggregates: true,
+                aggregatesHeight: 25,
+                autoRowHeight: false,
+                //groupping
+                /*groupsRenderer: function (value, rowData, level) {
+                    return "<strong>Assurance : " + value+"</strong>";
+                },*/
+                columns: [
+                    { text: 'Date', cellsAlign: 'left', align: 'center', dataField: 'Date', cellsFormat: 'dd/MM/yyyy', width: '10%' },
+                    { text: 'Ref.Facture', cellsAlign: 'left', align: 'center', dataField: 'RefFacture', width: '15%' },
+                    { text: 'Nom Patient', cellsAlign: 'left', align: 'left', dataField: 'IdentitePatient', width: '30%' },
+                    {
+                        text: 'Montant Dû.', cellsAlign: 'center', align: 'center', dataField: 'Charge', cellsRenderer: cellrender, width: '17%',
+                        aggregates: [{
+                            'Tot': function (aggregatedValue, currentValue, column, record) {
+                                return aggregatedValue + currentValue;
+                            }
+                        }],
+                        aggregatesRenderer: function (aggregates, column, element) {
+                            var renderString = "<div style='margin: 4px; height: 100%;'>";
+                            var mtt = formatNumber(aggregates.Tot);
+                            renderString += "<strong>Total : </strong>" + mtt + "</div>";
+                            return renderString;
+                        }
+                    },
+                    {
+                        text: 'Reste à payer', cellsAlign: 'center', align: 'center', dataField: 'ResteApayer', cellsRenderer: cellrender, width:'17%',
+                        aggregates: [{
+                            'Total': function (aggregatedValue, currentValue, column, record) {
+                                return aggregatedValue + currentValue;
+                            }
+                        }],
+                        aggregatesRenderer: function (aggregates, column, element) {
+                            var renderString = "<div style='margin: 4px;  height: 100%;'>";
+                            var mtt = formatNumber(aggregates.Total);
+                            renderString += "<strong>Total : </strong>" + mtt + "</div>";
+                            return renderString;
+                        }
+                    },
+                    { text: 'Regler', cellsAlign: 'center', align: 'center', dataField: 'Id', cellsRenderer: cellRenderReglement, filterable: false, sortable: false },
+                ]
+            });
+            $("#administration").addClass("active");
+            $("#fpar").addClass("active");
+        });
+    </script>
+}
+
+
+

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>jQWidgets_Framework</id>
+    <version>3.8.0</version>
+    <title>jQWidgets</title>
+    <authors>jQWidgets</authors>
+    <owners>jQWidgets</owners>
+    <licenseUrl>http://www.jqwidgets.com/license/</licenseUrl>
+    <projectUrl>http://www.jqwidgets.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>jQWidgets is an advanced jQuery and HTML5 UI framework.
+
+jQWidgets provides a comprehensive solution for building professional web sites and mobile apps. It is built entirely on open standards and technologies like HTML5, CSS, Javascript and jQuery. jQWidgets enables responsive web development and helps you create apps and websites that look beautiful on desktops, tablets and smart phones.
+
+jQWidgets is a feature complete framework with professional touch-enabled jQuery widgets, themes, input validation, drag &amp; drop plug-ins, data adapters, built-in WAI-ARIA accessibility, internationalization and MVVM support.</description>
+    <releaseNotes>jQWidgets v3.8.0 Release, Apr-27-2015
+
+What's New:
+
+- jqxChart column series properties to render as Pyramid and Funnel charts.
+- jqxChart new tooltips property toolTipMoveDuration to control time required move the tooltip between items.
+- jqxChart localization support.
+- jqxGrid, jqxChart, jqxTreeGrid and jqxDataTable PDF Export.
+- jqxGrid Ever Present Row.
+- jqxGrid Filter Menu customization.
+What's Improved:
+
+- jqxChart tooltips positioning and style using tooltip arrows.
+- jqxChart support for percentage radius in pie and donut series and polar/spider charts.
+- jqxChart automatic detection and parsing of date/time strings in different cultures.
+- jqxChart dateFormat property for xAxis values, tooltips and labels.
+- jqxGrid performance improvement which affects Grids with multiple columns. 
+- jqxGrid Grouping and Filtering API.
+- jqxAngular plugin improvement which allows dynamic compile of widgets through a function call.
+What's Fixed:
+
+- Fixed an issue in jqxGrid about resizing in RTL mode.
+- Fixed an issue in jqxGrid about clipboard handling in server paging mode.
+- Fixed an issue in jqxGrid regarding the Pager's rendering in RTL mode.
+- Fixed an issue in jqxDataTable regarding the setCellValue method when the column is sorted.
+- Fixed an issue in jqxDataTable regarding columns width on touch devices.
+- Fixed an issue in jqxComboBox regarding the getSelectedItem method when multiSelect mode is turned on.
+- Fixed an issue in jqxNumberInput regarding the behavior when the value is 0 and decimalDigits is set to 0.
+- Fixed an issue in jqxSwitchButotn regarding the dynamic changing of button's orientation.
+- Fixed an issue in jqxPasswordInput regarding the show password behavior on touch devices.
+- Fixed an issue in jqxEditor regarding the "change" event when "paste" is through mouse.
+- Fixed an issue in jqxPasswordInput password strength re-evaluation when setting the password with the val method.
+- Fixed an issue in jqxFileInput in Internet Explorer when the option "Include local directory path when uploading files to a server" is enabled.
+- Fixed an issue in jqxChart with custom colorFunction and range bars.
+- Fixed an issue in jqxChart with the lineWidth property of gridlines &amp; tickmarks in spider charts.
+- Fixed an issue in jqxChart tooltips formatSettings on common y-axis.
+- Fixed an issue in jqxChart with tooltip hiding in some corner cases.
+- Fixed an issue in jqxChart with ticks overlapping text in polar chart.
+- Fixed an issue in jqxChart with columns overlap detection logic.
+- Fixed an issue in jqxChart with waterfall series conneting lines in horizontal chart orientation.
+- Fixed an issue in jqxChart with calling 'update' after previously loading an empty data set.
+- Fixed an issue in jqxChart in end point spline rendering in VML mode.
+- Fixed an issue in jqxChart in vertical text rendering in VML mode.
+Breaking Changes:
+
+- The default value of jqxChart's skipOverlappingPoints option is now set to false in column series.</releaseNotes>
+    <dependencies>
+      <dependency id="jQuery" version="1.7" />
+    </dependencies>
+  </metadata>
+</package>

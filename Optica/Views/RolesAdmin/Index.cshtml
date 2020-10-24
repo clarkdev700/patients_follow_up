@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Microsoft.AspNet.Identity.EntityFramework.IdentityRole>
+
+@{
+    ViewBag.Title = "Index";
+    ViewBag.Titre = "Liste de Profils";
+}
+
+@section filedeNavigation {
+    <li><a href="#">Param&egrave;tre</a></li>
+    <li class="active"> Liste de profils @*Html.ActionLink("Profils", "Index", "RolesAdmin")*@</li>
+}
+
+<div class="row">
+    <div class="">
+        <div class="box box-primary">
+            <div class="box-header">
+
+            </div>
+            <div class="box-body">
+                <p>
+                    @Html.ActionLink("Nouveau", "Create", new { }, new { @class="btn btn-primary btn-flat"})
+                </p>
+                <table class="table table-responsive table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                @*Html.DisplayNameFor(model => model.Name)*@ Libell&eacute;
+                            </th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @*Html.ActionLink("Edit", "Edit", new { id = item.Id })*@
+                                    <a href="@Url.Action("Edit", new { id = item.Id})" title="Editer les informations"><i class="glyphicon glyphicon-edit"></i></a>
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Details", "Details", new { id = item.Id }) @*//A revoire*@ 
+                                </td>
+                                <td>
+                                    @*Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+                                    <a href="@Url.Action("Delete", new { id=item.Id})" title="Supprimer"><i class="glyphicon glyphicon-remove"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                   
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+

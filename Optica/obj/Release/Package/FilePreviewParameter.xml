@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="Default Web Site/optica07" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\dgbikpi\\Documents\\Visual\ Studio\ 2013\\Projects\\Optica\\Optica\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^C:\\Users\\dgbikpi\\Documents\\Visual\ Studio\ 2013\\Projects\\Optica\\Optica\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="AppDbContext-Web.config Connection String" description="" value="Server=127.0.0.1;Port=5432;Database=optica2;User Id=postgres;Password=root;" tags="">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\dgbikpi\\Documents\\Visual\ Studio\ 2013\\Projects\\Optica\\Optica\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='AppDbContext']/@connectionString" />
+  </parameter>
+  <parameter name="IdentityConnection-Web.config Connection String" description="" value="Server=127.0.0.1;Database=opticaAuth;User Id=postgres;Password=root;Port=5432" tags="">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\dgbikpi\\Documents\\Visual\ Studio\ 2013\\Projects\\Optica\\Optica\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='IdentityConnection']/@connectionString" />
+  </parameter>
+  <parameter name="Optica.Models.ApplicationDbContext-Web.config Connection String" description="" value="Server=127.0.0.1;Port=5432;Database=opticaauth2;User Id=postgres;Password=root;" tags="">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\dgbikpi\\Documents\\Visual\ Studio\ 2013\\Projects\\Optica\\Optica\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='Optica.Models.ApplicationDbContext']/@connectionString" />
+  </parameter>
+</parameters>

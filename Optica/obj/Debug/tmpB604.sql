@@ -1,0 +1,61 @@
+ALTER TABLE "dbo"."AspNetUserClaims" RENAME COLUMN "User_Id" TO "UserId"
+;
+
+ALTER TABLE "dbo"."AspNetUserLogins" DROP CONSTRAINT "PK_dbo.AspNetUserLogins"
+;
+
+ALTER TABLE "dbo"."AspNetUsers" ADD "Email" varchar(256)
+;
+
+ALTER TABLE "dbo"."AspNetUsers" ADD "EmailConfirmed" boolean NOT NULL DEFAULT FALSE
+;
+
+ALTER TABLE "dbo"."AspNetUsers" ADD "PhoneNumber" text
+;
+
+ALTER TABLE "dbo"."AspNetUsers" ADD "PhoneNumberConfirmed" boolean NOT NULL DEFAULT FALSE
+;
+
+ALTER TABLE "dbo"."AspNetUsers" ADD "TwoFactorEnabled" boolean NOT NULL DEFAULT FALSE
+;
+
+ALTER TABLE "dbo"."AspNetUsers" ADD "LockoutEndDateUtc" timestamp
+;
+
+ALTER TABLE "dbo"."AspNetUsers" ADD "LockoutEnabled" boolean NOT NULL DEFAULT FALSE
+;
+
+ALTER TABLE "dbo"."AspNetUsers" ADD "AccessFailedCount" int4 NOT NULL DEFAULT 0
+;
+
+ALTER TABLE "dbo"."AspNetRoles" ALTER COLUMN "Name" TYPE varchar(256)
+;
+
+ALTER TABLE "dbo"."AspNetRoles" ALTER COLUMN "Name" SET NOT NULL
+;
+
+ALTER TABLE "dbo"."AspNetRoles" ALTER COLUMN "Name" DROP DEFAULT
+;
+
+ALTER TABLE "dbo"."AspNetUsers" ALTER COLUMN "UserName" TYPE varchar(256)
+;
+
+ALTER TABLE "dbo"."AspNetUsers" ALTER COLUMN "UserName" SET NOT NULL
+;
+
+ALTER TABLE "dbo"."AspNetUsers" ALTER COLUMN "UserName" DROP DEFAULT
+;
+
+ALTER TABLE "dbo"."AspNetUserLogins" ADD CONSTRAINT "PK_dbo.AspNetUserLogins" PRIMARY KEY ("LoginProvider","ProviderKey","UserId")
+;
+
+CREATE UNIQUE INDEX "AspNetRoles_RoleNameIndex" ON "dbo"."AspNetRoles" ("Name")
+;
+
+CREATE UNIQUE INDEX "AspNetUsers_UserNameIndex" ON "dbo"."AspNetUsers" ("UserName")
+;
+
+ALTER TABLE "dbo"."AspNetUsers" DROP COLUMN "Discriminator"
+;
+
+INSERT INTO "dbo"."__MigrationHistory"("MigrationId","ContextKey","Model","ProductVersion") VALUES (E'201505021013043_MAJPack_ModifDeStructure_du_BD',E'Optica.IdentityMigrations.Configuration',decode('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', 'base64'),E'6.1.3-40302')

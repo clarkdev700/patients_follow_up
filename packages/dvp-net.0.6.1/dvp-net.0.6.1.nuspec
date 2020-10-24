@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>dvp-net</id>
+    <version>0.6.1</version>
+    <title>Dvp.NET</title>
+    <authors>Developpez.com</authors>
+    <owners>Developpez.com</owners>
+    <licenseUrl>http://www.gnu.org/licenses/lgpl-3.0.txt</licenseUrl>
+    <projectUrl>http://dvp-net.developpez.com/</projectUrl>
+    <iconUrl>http://dvp-net.developpez.com/images/logo-dvp.net-32.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Librairie de classes diverses pour le développement d'applications .NET, créée à partir des contributions des membres de Developpez.com</description>
+    <summary>Librairie de classes diverses pour le développement d'applications .NET, créée à partir des contributions des membres de Developpez.com</summary>
+    <language>fr-FR</language>
+  </metadata>
+</package>

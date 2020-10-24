@@ -1,0 +1,425 @@
+﻿@model Optica.ViewModels.DashViewModel
+    @{
+        ViewBag.Title = "Index";
+    }
+    @section myHeadStyle{
+       @Styles.Render("~/Content/jqxStyle")
+       <link href="~/Content/ionicons.min.css" rel="stylesheet" />
+        <style type="text/css">
+            .row {
+                /*font-family: 'Times New Roman', 'Baskerville Old Face';*/
+            }
+        </style>
+    }
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>@Model.RegPatient</h3>
+                    <p>Nouveau patient</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person-add"></i>
+                </div>
+                <a href="#" class="small-box-footer">Details <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>@Model.RegConsultation</h3>
+                    @if (@Model.RegConsultation > 1)
+                    {
+                        <p>Consultations</p>
+                    }
+                    else
+                    {
+                        <p>Consultation</p>
+                    }
+                    
+                </div>
+                <div class="icon">
+                    <i class="ion ion-eye"></i>
+                </div>
+                <a href="@Url.RouteUrl("_journalTraitementPatient")" class="small-box-footer">Details <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3>@Model.Cash.ToString("N0", System.Globalization.CultureInfo.CurrentCulture) FCFA</h3>
+                    <p>Caisse</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-social-usd-outline"></i>
+                </div>
+                <a href="@Url.RouteUrl("_journalReglementFacture")" class="small-box-footer">Details <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="nav-tabs-custom" style="cursor:move;">
+                <ul class="nav nav-tabs pull-right ui-sortable-handle">
+                    <li>
+                        <a href="#" data-toggle="tab">Week</a>
+                    </li>
+                    <li class="active">
+                        <a href="#" data-toggle="tab">Day</a>
+                    </li>
+                    <li class="pull-left header">
+                        <i class="fa fa-inbox"></i>
+                        Analyses
+                    </li>
+                </ul>
+                <div class="tab-content no-padding">
+                    <div id="zoneGraph" style="width:auto; height:400px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="box box-primary">
+                <div class="box-header ui-sortable-handle" style="cursor:move;">
+                </div>
+                <div class="box-body">
+                    <div id="caisseGraph" style="width:auto; height:500px;"></div>
+                </div>
+                <div class="box-footer ui-sortable-handle"></div>
+            </div>
+        </div>
+    </div>
+<div class="row">
+    <div id="weekStat" style="width:auto; height: 400px;"></div>
+</div>
+<div class="row"><div id="assurpartdete"></div></div>
+    @section Scripts {
+        @Scripts.Render("~/Scripts/jqxBase")
+        @Scripts.Render("~/Scripts/jqxChart")
+        <script type="text/javascript">
+        $(document).ready(function () {
+            // prepare chart data as an array
+            var source =
+            {
+                datatype: "json",
+                datafields: [
+                    { name: 'Vpourcent' },
+                    { name: 'Acte' },
+                    {name: 'Qte'}
+                ],
+                url: "@Url.RouteUrl("_dashboardAnalyses")"
+        };
+        var dataAdapter = new $.jqx.dataAdapter(source, { async: false, autoBind: true, loadError: function (xhr, status, error) { alert('Error loading "' + source.url + '" : ' + error); } });
+        // prepare jqxChart settings
+        var settings = {
+            title: "Statistique des analyses",
+            description: "",
+            enableAnimations: true,
+            showLegend: true,
+            showBorderLine: true,
+            legendLayout: { left: 20, top: 160, width: 300, height: 200, flow: 'vertical' },
+            padding: { left: 5, top: 5, right: 5, bottom: 5 },
+            titlePadding: { left: 0, top: 0, right: 0, bottom: 10 },
+            source: dataAdapter,
+            colorScheme: 'scheme03',
+            seriesGroups:
+                [
+                    {
+                        type: 'pie',
+                        showLabels: true,
+                        series:
+                            [
+                                {
+                                    dataField: 'Vpourcent',
+                                    displayText: 'Acte',
+                                    labelRadius: 170,
+                                    initialAngle: 15,
+                                    radius: 145,
+                                    centerOffset: 0,
+                                    formatFunction: function (value) {
+                                        if (isNaN(value))
+                                            return value;
+                                        return Math.round(parseFloat(value,10), 2) + '%';
+                                    },
+                                }
+                            ]
+                    }
+                ]
+        };
+            // prepare chart data as an array
+        var source2 =
+        {
+            datatype: "json",
+            datafields: [
+                { name: 'Origine' },
+                { name: 'VPourcent' }
+            ],
+            url: "@Url.RouteUrl("__dashboardDette")"
+        };
+        var dataAdapter2 = new $.jqx.dataAdapter(source2, { async: false, autoBind: true, loadError: function (xhr, status, error) { alert('Error loading "' + source.url + '" : ' + error); } });
+            // prepare jqxChart settings
+        var settings2 = {
+            title: "Statistique des parts de dette",
+            description: "",
+            enableAnimations: true,
+            showLegend: true,
+            showBorderLine: true,
+            /*legendLayout: { left: 20, top: 160, width: 300, height: 200, flow: 'vertical' },*/
+            legendPosition: { left: 70, top: 140, width: 100, height: 100 },
+            padding: { left: 5, top: 5, right: 5, bottom: 5 },
+            titlePadding: { left: 0, top: 0, right: 0, bottom: 10 },
+            source: dataAdapter2,
+            colorScheme: 'scheme05',
+            seriesGroups:
+                [
+                    {
+                        type: 'donut',
+                        showLabels: true,
+                        series:
+                            [
+                                {
+                                    dataField: 'VPourcent',
+                                    displayText: 'Origine',
+                                    labelRadius: 170,
+                                    initialAngle: 15,
+                                    radius: 165,
+                                    innerRadius: 70,
+                                    centerOffset: 0,
+                                    /*formatSettings: { sufix: '%', decimalPlaces: 1 }*/
+                                    formatFunction: function (value) {
+                                        if (isNaN(value))
+                                            return value;
+                                        return parseFloat(value) + '%';
+                                    }
+                                }
+                            ]
+                    }
+                ]
+        };
+
+        
+            // prepare jqxChart settings
+        var source3 = {
+            datatype: "json",
+            datafields: [
+                { name: 'Jour' },
+                { name: 'AR', map: 'V1>Acte' },
+                { name: 'Qte1', map: 'V1>Qte' },
+                { name: 'CVA', map: 'V2>Acte' },
+                { name: 'Qte2', map: 'V2>Qte' },
+                { name: 'PACH', map: 'V3>Acte' },
+                { name: 'Qte3', map: 'V3>Qte' },
+                { name: 'PIO', map: 'V4>Acte' },
+                { name: 'Qte4', map: 'V4>Qte' }/*,
+                { name: 'A5', map: 'V5>Acte' },
+                { name: 'Qte5', map: 'V5>Qte' },*/
+
+            ],
+            url: "@Url.RouteUrl("_dashboardAnalyseWeekStat")"
+        };
+       var dataAdapter3 = new $.jqx.dataAdapter(source3, { async: false, autoBind: true, loadError: function (xhr, status, error) { alert('Error loading "' + source.url + '" : ' + error); } });
+        /*var settings3 = {
+            title: "Fitness & exercise weekly scorecard",
+            description: "Time spent in vigorous exercise",
+            enableAnimations: true,
+            showLegend: true,
+            padding: { left: 5, top: 5, right: 5, bottom: 5 },
+            titlePadding: { left: 90, top: 0, right: 0, bottom: 10 },
+            source: dataAdapter,
+            xAxis:
+                {
+                    dataField: 'Jour',
+                    gridLines: { visible: true }
+                    //showGridLines: true
+                },
+            colorScheme: 'scheme01',
+            seriesGroups:
+                [
+                    {
+                        type: 'column',
+                        columnsGapPercent: 50,
+                        seriesGapPercent: 0,
+                        valueAxis:
+                        {
+                            unitInterval: 2,
+                            minValue: 0,
+                            maxValue: 15,
+                            displayValueAxis: true,
+                            description: 'Time in minutes',
+                            axisSize: 'auto',
+                            tickMarksColor: '#888888'
+                        },
+                        series: [
+                                {
+                                    dataField: 'Qte1',
+                                    displayText: 'A1'
+                                },
+                                {
+                                    dataField: 'Qte2',
+                                    displayText: 'A2'
+                                },
+                                {
+                                    dataField: 'Qte3',
+                                    displayText: 'A3'
+                                },
+                                {
+                                    dataField: 'Qte4',
+                                    displayText: 'A4'
+                                },
+                                {
+                                    dataField: 'Qte5',
+                                    displayText: 'A5'
+                                }
+                        ]
+                    }
+                ]
+        };*/
+       var settings3 = {
+           title: "Analyses realisées sur la semaine en cours",
+           description: "",
+           showLegend: true,
+           enableAnimations: true,
+           padding: { left: 5, top: 5, right: 5, bottom: 5 },
+           titlePadding: { left: 0, top: 0, right: 0, bottom: 10 },
+           source: dataAdapter3,
+           xAxis:
+           {
+               position: 'top',
+               dataField: 'Jour',
+               gridLines: { visible: true }
+           },
+           colorScheme: 'scheme02',
+           seriesGroups:
+               [
+                   {
+                       type: 'column',
+                       columnsGapPercent: 50,
+                       valueAxis:
+                       {
+                           title: { text: 'Nbre réalisé' },
+                           unitInterval: 2,
+                           minValue: 0,
+                           maxValue: 24
+                       },
+                       series: [
+                               /*{
+                                   dataField: 'GDP',
+                                   displayText: 'GDP per Capita',
+                                   labels: {
+                                       visible: true,
+                                       verticalAlignment: 'top',
+                                       offset: { x: 0, y: -20 }
+                                   },
+                                   formatFunction: function (value) {
+                                       return Math.round(value / 1000) + 'K';
+                                   }
+                               },
+                               {
+                                   dataField: 'Debt',
+                                   displayText: 'Debt per Capita',
+                                   labels: {
+                                       visible: true,
+                                       verticalAlignment: 'top',
+                                       offset: { x: 0, y: -20 }
+                                   },
+                                   formatFunction: function (value) {
+                                       return Math.round(value / 1000) + 'K';
+                                   }
+                               }*/
+                               {
+                                   dataField: 'Qte1',
+                                   displayText: 'AR'
+                               },
+                                {
+                                    dataField: 'Qte2',
+                                    displayText: 'CVA'
+                                },
+                                {
+                                    dataField: 'Qte3',
+                                    displayText: 'PACH'
+                                },
+                                {
+                                    dataField: 'Qte4',
+                                    displayText: 'PIO'
+                                }/*,
+                                {
+                                    dataField: 'Qte5',
+                                    displayText: 'A5'
+                                }*/
+                       ]
+                   }
+               ]
+       };
+
+            ////Assur
+       var mttAssur = 0;
+       var source4 =
+  {
+      datatype: "json",
+      datafields: [
+          { name: 'Montant' },
+          { name: 'NomAssur' },
+          { name: 'Taux' },
+          {name:'CodeAssur'}
+      ],
+      url: "@Url.RouteUrl("_dashboardAssuranceStat")"
+        };
+            var dataAdapter4 = new $.jqx.dataAdapter(source4, {
+                async: false, autoBind: true, loadError: function (xhr, status, error) { alert('Error loading "' + source.url + '" : ' + error); },
+                beforeLoadComplete: function (records) {
+                    $.each(records, function (i, val) {
+                        //console.log(val);
+                        mttAssur += val.Montant;
+                    });
+                }
+            });
+   // prepare jqxChart settings
+   var settings4 = {
+       title: "Repartition des dettes d'assurance(" + new Intl.NumberFormat("fr-FR").format(mttAssur) + ")FCFA",
+       description: "",
+       enableAnimations: true,
+       showLegend: true,
+       showBorderLine: true,
+       /*legendLayout: { left: 20, top: 160, width: 300, height: 200, flow: 'vertical' },*/
+       legendPosition: { left: 70, top: 140, width: 100, height: 200 },
+       padding: { left: 5, top: 5, right: 5, bottom: 5 },
+       titlePadding: { left: 0, top: 0, right: 0, bottom: 10 },
+       source: dataAdapter4,
+       colorScheme: 'scheme01',
+       seriesGroups:
+           [
+               {
+                   type: 'donut',
+                   showLabels: true,
+                   series:
+                       [
+                           {
+                               dataField: 'Taux',
+                               displayText: 'CodeAssur',
+                               labelRadius: 170,
+                               initialAngle: 15,
+                               radius: 165,
+                               innerRadius: 70,
+                               centerOffset: 0,
+                               /*formatSettings: { sufix: '%', decimalPlaces: 1 }*/
+                               formatFunction: function (value) {
+                                   if (isNaN(value))
+                                       return value;
+                                   return parseFloat(value) + '%';
+                               }
+                           }
+                       ]
+               }
+           ]
+   };
+
+        // setup the chart
+        $('#zoneGraph').jqxChart(settings);
+        $('#caisseGraph').jqxChart(settings4);
+        $('#weekStat').jqxChart(settings3);
+        //$('#assurpartdete').jqxChart(settings4);
+        $("#dashbord").addClass("active");
+        });
+        </script>
+    }

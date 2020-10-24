@@ -1,0 +1,127 @@
+﻿@model Optica.ViewModels.ReglementReport 
+@*IEnumerable<Optica.ViewModels.ReglementCaisse>*@
+@using System.Globalization
+@using Developpez.Dotnet;
+@{
+    ViewBag.Title = "CaisseReport";
+    Layout = "";
+    var nbPage = (decimal) Model.Rc.Count / 20;
+    nbPage = Math.Ceiling(nbPage);
+}
+<html>
+    <head>
+        <title></title>
+        <meta charset="utf-8" />
+        <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="col-lg-offset-1 col-lg-11" style="margin:0 95px;" >
+            @*<div class="row text-center">
+                <h4>Etat de R&egrave;glment de Facture du @Model.DateDebut au @Model.DateFin</h4>
+            </div>*@
+            <div class="row">
+                @{
+                int i = 0, x = 0;
+                while (i < nbPage)
+                {
+                  <h4 class="text-center" style="margin:20px auto 10px auto;"><u>Etat de R&egrave;glment de Facture du @Model.DateDebut au @Model.DateFin</u></h4>
+                  <table class="table table-bordered table-striped" cellspacing="5" cellpadding="5">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Nom patient</th>
+                                <th>R&eacute;f&eacute;rence</th>
+                                <th>Montant</th>
+                                <th>Mode de r&egrave;glement</th>
+                                <th>Source r&egrave;glement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var j = x; j < Model.Rc.Count; j++)
+                            {
+                                <tr>
+                                    <td>@Model.Rc[j].DateT</td>
+                                    <td>@Model.Rc[j].NomPatient</td>
+                                    <td>Ref#@Model.Rc[j].NumFacture</td>
+                                    <td>@Model.Rc[j].Montant</td>
+                                    <td>@Model.Rc[j].ModeReglement</td>
+                                    <td>@Model.Rc[j].SourceReglement</td>
+                                </tr>
+                                if (j > 0 && j % 20 == 0)
+                                {
+                                    x = j + 1;
+                                    break;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    i++;
+                    if ((nbPage - i) > 0)
+                    {
+                        <div style="page-break-after: always; border:none;"></div>
+                    }
+                }
+
+            }
+               @* <table class="table table-bordered table-striped" cellspacing="5" cellpadding="5">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Nom patient</th>
+                            <th>Facture</th>
+                            <th>Montant</th>
+                            <th>Mode de r&egrave;glement</th>
+                            <th>Source r&egrave;glement</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Date</th>
+                            <th>Nom patient</th>
+                            <th>Facture</th>
+                            <th>Montant</th>
+                            <th>Mode de r&egrave;glement</th>
+                            <th>Source r&egrave;glement</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @{int i = 1;}
+                        @foreach (var regl in Model.Rc)
+                        {
+                            if (i % 22 == 0)
+                            {
+                                //add break page;
+                                <tr style="page-break-after: always;">
+                                    <th>Date</th>
+                                    <th>Nom patient</th>
+                                    <th>Facture</th>
+                                    <th>Montant</th>
+                                    <th>Mode de r&egrave;glement</th>
+                                    <th>Source r&egrave;glement</th>
+                                </tr>
+                            }
+                            i++;
+                            <tr>
+                                <td>@regl.DateT</td>
+                                <td>@regl.NomPatient</td>
+                                <td>Ref#@regl.NumFacture</td>
+                                <td>@regl.Montant</td>
+                                <td>@regl.ModeReglement</td>
+                                <td>@regl.SourceReglement</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>*@
+            </div>
+            <div class="row">
+                @{
+                    var mttEnlettre = NumberConverter.Spell((int)Model.MontantReport);
+                    var mttEnLettreFormater = mttEnlettre[0].ToString().ToUpper() + mttEnlettre.Substring(1);
+                }
+                <h4>Valeur du montant en caisse: <strong>@mttEnLettreFormater (@Model.MontantReport.ToString("N0", System.Globalization.CultureInfo.CurrentCulture)) FCFA. </strong></h4>
+            </div>
+        </div>
+    </body>
+</html>
+
+

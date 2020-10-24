@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="AppDbContext-Web.config Connection String" description="AppDbContext Chaîne de connexion utilisée dans web.config par l’application pour accéder à la base de données." defaultValue="Server=127.0.0.1;Database=bd4;User Id=postgres;Password=root;Port=5432" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\clark\\Documents\\Visual\ Studio\ 2013\\Projects\\Optica\\Optica\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='AppDbContext']/@connectionString" />
+  </parameter>
+  <parameter name="IdentityConnection-Web.config Connection String" description="IdentityConnection Chaîne de connexion utilisée dans web.config par l’application pour accéder à la base de données." defaultValue="Server=127.0.0.1;Database=testAuth;User Id=postgres;Password=root;Port=5432" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\clark\\Documents\\Visual\ Studio\ 2013\\Projects\\Optica\\Optica\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='IdentityConnection']/@connectionString" />
+  </parameter>
+  <parameter name="Optica.Models.ApplicationDbContext-Web.config Connection String" description="Optica.Models.ApplicationDbContext Chaîne de connexion utilisée dans web.config par l’application pour accéder à la base de données." defaultValue="Optica.Models.ApplicationDbContext_ConnectionString" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\clark\\Documents\\Visual\ Studio\ 2013\\Projects\\Optica\\Optica\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='Optica.Models.ApplicationDbContext']/@connectionString" />
+  </parameter>
+</parameters>

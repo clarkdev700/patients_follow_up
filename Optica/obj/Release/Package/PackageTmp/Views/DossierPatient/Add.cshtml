@@ -1,0 +1,60 @@
+﻿@model Optica.Models.DossierPat
+@{
+    ViewBag.Title = "Add";
+    ViewBag.Titre = "Patient";
+}
+
+@{
+    string Action = "Add";
+    string titre = "Nouveau";
+    Optica.Models.Patient patient = (Optica.Models.Patient) Model.Patient;
+    if (Model != null && Model.Motif != null)
+    {
+        Action = "Update";
+        titre = "Edition";
+    }
+}
+
+<div class="box box-primary">
+    <div class="box-header">
+        <h3 style="text-decoration:underline">Dossier patient<span style="font-style:italic; font-size:small;"><i class="glyphicon glyphicon-chevron-right"></i>@titre</span></h3>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-5">
+                @using (Html.BeginForm(Action, "DossierPatient", FormMethod.Post))
+                {
+                    <div class="form-group">
+                        @Html.Label("Ref dossier")
+                        @Html.TextBox("Motif", Model.Motif, new { @class = "form-control" })
+                    </div>
+                    <div class="checkbox">
+                        <label style="font-weight:bold;">
+                            @if (Action == "Update" && Model.Statut == true)
+                            {
+                                <input type="checkbox" name="Statut" checked value="true" disabled />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="Statut" value="true" disabled />
+                            }
+                            Statut
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <div class="">
+                            <input type="submit" value="Valider" class="btn btn-sm" />
+                            <input type="button" value="Annuler" class="btn btn-sm" />
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="col-sm-4"></div>
+            <div class="col-sm-3" style="margin-top:-12px;">
+                @Html.Partial("~/Views/Patient/InfoPatient.cshtml", patient)
+            </div>
+        </div>
+    </div>
+</div>
+
+

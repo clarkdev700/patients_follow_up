@@ -1,0 +1,223 @@
+﻿@*model IEnumerable<Optica.ViewModels.JournalTraitement>*@
+@{
+    ViewBag.Title = "Journal de traitement";
+    ViewBag.Titre = "Journal de Traitement";
+}
+
+@section myHeadStyle{
+    <link href="~/Content/chosen.min.css" rel="stylesheet" />
+    }
+
+@section filedeNavigation {
+    <li><a href="#">Administration</a></li>
+    <li class="active">Journal de Traitement</li>
+}
+
+<div class="row">
+    <div class="box box-primary">
+        <div class="box-header">
+
+        </div>
+        <div class="box-body">
+                <div class="row">
+                <div class="pull-left">
+                        @using (Html.BeginForm("TraitementJournal", "TraitementOrd", FormMethod.Post, new { @class = "form-inline" }))
+                        {
+                            <div class="form-group col-sm-2" style="">
+                                @Html.Label("Debut")
+                                <input type="date" name="deb" id="deb" value="@ViewBag.deb.ToString("yyyy-MM-01")" class="form-control input-sm" />
+                            </div>
+                            <div class="form-group col-sm-2" style="">
+                                @Html.Label("Fin")
+                                <input type="date" name="end" id="end" class="form-control input-sm" value="@ViewBag.deb.ToString("yyyy-MM-dd")" />
+                            </div>
+                             <div class="form-group col-sm-4" style="">
+                                @Html.Label("Medecins")
+                                @Html.ListBox("Medecins", (MultiSelectList)ViewBag.Medecins, new { @class = "chosen-select", @data_placeholder="--Choisir les medecins--" })
+                            </div>
+                            <div class="form-group col-sm-3" style="">
+                                @Html.Label("Actes médicaux")
+                                @Html.ListBox("Actes", (MultiSelectList)ViewBag.Actes, new { @class = "chosen-select" })
+                            </div>
+                            <div class="form-group col-sm-1">
+                                @Html.Label("")
+                                <input type="button" value="Valider" id="btnValider" class="btn btn-sm" style="margin-top: 23px;" />
+                            </div>
+                            
+                        }
+                  
+                </div>
+                
+                </div> <!-- ./Partie filtre date -->
+                <div class="row">
+                    <div class="pull-right" style="margin-top:15px;">
+                        <div class="col-sm-8">
+                            <div class="row">
+                                <button class="btn btn-sm btn-primary" id="btn_print"><i class="glyphicon glyphicon-print"></i> Imprimer</button>
+                            </div>
+                            <div class="row" hidden id="ajaxLoad">
+                                <img src="~/Datadir/ajax-loader.gif" width="80" />
+                            </div>
+                        </div>
+                       
+                        
+                    </div>
+                    
+                    <table class="table table-striped table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Nom Patient</th>
+                                <th>Facture</th>
+                                <th colspan="2">Acte medical</th>
+                                <th colspan="4">Montant</th>
+                                <th>Medecin Trait. </th>
+                                <th>Medecin Rec.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @*{
+                                if (Model != null && Model.ToList().Count > 0)
+                                {
+                                    foreach (var elt in Model)
+                                    {
+                                        <tr>
+                                            <td>@elt.DateTraitement.ToString("dd/MM/yyyy")</td>
+                                            <td>@elt.NomPatient</td>
+                                            <td>Ref#@elt.NumeroFacture</td>
+                                            <td colspan="2">
+                                                @foreach (var a in elt.ActeMedicaux)
+                                                {
+                                                    @a;
+                                                }
+                                            </td>
+                                            <td colspan="4">
+                                                <table cellspacing="15" cellpadding="5" width="100%;">
+                                                    <tr ><th>Ass.</th><th>Patient</th></tr>
+                                                    <tr><td>@elt.MontantAssurance</td><td>@elt.MontantPatient</td></tr>
+                                                </table>
+                                            </td>
+                                            <td>@elt.NomMedecin</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="12" class="text-danger" valign="middle" align="center">Aucun traitement effectué pendant la periode.</td></tr>
+                                }
+                            }*@
+                        </tbody>
+                    </table>
+
+                </div>
+                    <div class="row">
+                        <p>
+                            <span>Total Charge Assurance :</span> <span id="MttAssurance">0  FCFA</span>
+                        </p>
+                        <p>
+                            <span>Total charge patient :</span> <span id="MttPatient">0 FCFA</span>
+                        </p>
+                    </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Scripts/knockout-3.2.0.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/chosen.proto.min.js"></script>
+    <script type="text/javascript">
+        $("#Medecins").chosen({ width: "100%", dataPlaceholder: "--Choisir les medecins--" });
+        $("#Actes").chosen({ width: "100%", dataPlaceholder: "--Choisir les actes medicaux--" });
+        $(document).ready(function () {
+            $("#administration").addClass("active");
+            $("#ltp").addClass("active");
+            $("#btnValider").click(function () {
+                console.log($("#Medecins").val());
+                console.log($("#Actes").val());
+                
+                var medecins = $("#Medecins").val();
+                console.log(typeof medecins);
+                var actes = $("#Actes").val();
+                $.ajax({
+                    url: "@Url.RouteUrl("_journalTraitement")",
+                    type: "POST",
+                    data: { deb: $("#deb").val(), end: $("#end").val(), Medecins: medecins, Actes: actes},
+                    dataType: "json",
+                    success: function (data) {
+                        var rep = "";
+                        var mttAssur = 0, mttPatient = 0;
+                        if (data.length > 0)
+                        {
+                            $.each(data, function (key, val) {
+                                var ch1 = ch2 = ch3 = '';
+                                var style = '';
+                                if (val.Statut == 'Annuler') {
+                                    style = 'background-color:#f28a8a;';
+                                    //#e7c3c3 #dca7a7 #f28a8a
+                                } else {
+                                    var tmpAssur = val.MontantAssurance.replace(/\s+/g, '');
+                                    var tmpPat = val.MontantPatient.replace(/\s+/g, '');
+                                    mttAssur += parseFloat(tmpAssur, 10);
+                                    mttPatient += parseFloat(tmpPat, 10);
+                                    console.log(mttPatient);
+                                    console.log(mttAssur);
+                                }
+                                ch1 = '<tr style="'+style+'">' +
+                                        '<td>' + val.Tdate + '</td>' +
+                                        '<td>' + val.NomPatient + '</td>' +
+                                        '<td>Ref#' + val.NumeroFacture + '</td>' +
+                                        '<td colspan="2">';
+                                if (val.ActeMedicaux.length > 0) {
+                                    for (var i = 0; i < val.ActeMedicaux.length; i++) {
+                                        ch2 += val.ActeMedicaux[i];
+                                    }
+                                };
+                                ch3 = '</td>' +
+                                '<td colspan="4"><table cellspacing="15" cellpadding="5" width="100%;"><tr><th>Ass.</th><th>Patient</th></tr><tr><td>' + val.MontantAssurance + '</td><td>' + val.MontantPatient + '</td></tr></table></td>'+
+                                '<td>' + val.NomMedecin + '</td>' +
+                                '<td>' + val.NomMedecinRecommande + '</td>' +
+                                '</tr>';
+                                rep += ch1 + ch2 + ch3;
+                            });
+                        } else {
+                            rep = '<tr><td colspan="12" class="text-danger" valign="middle" align="center">Aucun traitement effectué pendant la periode.</td></tr>';
+                        }
+                        $("tbody").html("");
+                        $("tbody").html(rep);
+                        $("#MttAssurance").html('<strong>'+ new Intl.NumberFormat("fr-FR").format(mttAssur) + ' FCFA</strong>');
+                        $("#MttPatient").html('<strong>'+new Intl.NumberFormat("fr-FR").format(mttPatient)+' FCFA</strong>');
+                    },
+                    error: function() {
+                        alert("Une erreur s'est produite.\n Veuillez ressayer plus tard");
+                    }
+                });
+            });
+            $("#btn_print").click(function () {
+                alert("Génération de rapport en cours.\ Veuillez patienter un instant.");
+                $("#ajaxLoad").show();
+                //return false;
+                $.ajax({
+                    url:"@Url.RouteUrl("_journalTraitement")",
+                    type:"POST",
+                    data:{deb:$("#deb").val(), end:$("#end").val(), print:"print", Actes : $("#Actes").val(), Medecins: $("#Medecins").val()},
+                    dataType:"json",
+                    success: function(data) {
+                        $("#ajaxLoad").hide();
+                        if (data.qState == "OK")
+                        {
+                            @{
+                                var filePath = Server.MapPath(System.IO.Path.Combine("~/Datadir/", "TraitementReport.pdf"));
+                            }                          
+                            window.open("../../DataDir/TraitementReport.pdf");
+                        } else { alert("Aucun Etat disponible à imprimer");}
+                    },
+                    error: function() {
+                        alert("Une erreur s'est produite veuillez ressayer plus tard");
+                        $("#ajaxLoad").hide();
+                    }
+                });
+            });
+        });
+    </script>
+   
+}

@@ -1,0 +1,49 @@
+﻿@model Optica.Models.Patient
+@{
+    ViewBag.Title = "delete";
+    ViewBag.Titre = "Patient";
+    string titre = "Supprimer un patient";
+}
+
+@section filedeNavigation {
+        <li><a href="@Url.RouteUrl("__patientIndex")">Patient</a></li>
+        <li class="active">@titre</li>
+    }
+
+<div class="box box-primary">
+    <div class="box-header">
+        <h4><u>@titre</u></h4>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-9"></div>
+            <div class="col-sm-3">
+                @Html.Partial("~/Views/Patient/InfoPatient.cshtml", Model)
+            </div>
+        </div>
+        <div class="row">
+            
+            @using (Html.BeginForm("Delete", "Patient", new { id = Model.Id }, FormMethod.Post, new { }))
+            {
+            <p class="alert alert-danger">
+                Vous &ecirc;tes sur le point de supprimer le patient <strong>@Model.Nom &nbsp; @Model.Prenom .</strong>
+                Tous les operations du patient seront aussi perdus. Voulez-vous vraiment proceder &agrave; la suppression?
+            </p>
+                <div class="form-group">
+                    <input type="submit" value="Oui" class="btn btn-default btn-flat" />
+                    <a href="@Url.RouteUrl("__patientIndex")" class="btn btn-default btn-flat">Non</a>
+                </div>
+                
+            }
+            
+            
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#patient").addClass("active");
+        });
+    </script>
+}

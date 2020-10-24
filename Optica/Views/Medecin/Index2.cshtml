@@ -1,0 +1,94 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    ViewBag.Titre = "Liste des medecins";
+}
+
+@section filedeNavigation {
+    <li class="active">Liste des medecins</li>
+}
+
+@section myHeadStyle{
+    @Styles.Render("~/Content/jqxStyle")
+}
+
+<div class="box box-primary">
+    <div class="box-header">
+
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <p>@Html.ActionLink("Nouveau medecin", "Add", new { }, new { @class = "btn btn-primary btn-flat" })</p>
+        </div>
+        <div class="row">
+            <div id="docTable"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+@Scripts.Render("~/Scripts/jqxBase")
+@Scripts.Render("~/Scripts/jqxTable")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var source = {
+                dataType : "json",
+                dataFields: [
+                    { name: "NumMat", type: "string" },
+                    { name: "Nom", type: "string" },
+                    { name: "Prenoms", type: "string" },
+                    { name: "Titre", type: "string" },
+                    { name: "Contact", type: "string" },
+                    { name: "Id", type:"number"}
+                ],
+                id: "Id",
+                url:"@Url.RouteUrl("__listeMedecin")"
+            };
+            var dataAdapter = new $.jqx.dataAdapter(source);
+            var celRendering = function (row, column, value, rowData) {
+                var container = "";
+                var btnEdit = '<a href="@Url.RouteUrl("_updateMedecin", new { id="id"})" title="editer un medecin"><i class="glyphicon glyphicon-edit"></i></a> &nbsp;&nbsp;&nbsp;';
+                var btnDel = '<a href="@Url.RouteUrl("_deleteMedecin", new { id="id"})" title="supprimer un medecin"><i class="glyphicon glyphicon-remove"></i></a>';
+                container += btnEdit + btnDel + "";
+                return container.replace(/id/gi, value);
+            };
+            var getLocalization = function () {
+                var localizationobj = {};
+                localizationobj.pagerGoToPageString = "Page :";
+                localizationobj.pagershowrowsstring = "Ligne:";
+                localizationobj.pagerrangestring = " sur ";
+                localizationobj.pagerNextButtonString = "Suivant";
+                localizationobj.loadtext = "Chargement...";
+                localizationobj.filterSearchString = "Recherche:";
+                localizationobj.pagerPreviousButtonString = "Precedent";
+                return localizationobj;
+            };
+
+            $("#docTable").jqxDataTable(
+                    {
+                        width: "100%",
+                        source: dataAdapter,
+                        theme: 'darkblue',
+                        pagerMode: 'advanced',
+                        pageable: true,
+                        altRows: true,
+                        sortable: true,
+                        pageSize: 20,
+                        filterable: true,
+                        filterMode: 'simple',
+                        columnsResize: true,
+                        localization: getLocalization(),
+                        columns: [
+                            { text: 'N° matr.', dataField: "NumMat", width:"15%" },
+                            { text: 'Nom', dataField: "Nom", width:"25%"/*, align:"center"*/},
+                            { text: 'Prenoms', dataField: "Prenoms", width:"25%"},
+                            { text: 'Titre', dataField: "Titre", width:"10%"},
+                            { text: 'Contact', dataField: "Contact", width: "12%" },
+                            { text: ' ', dataField: "Id", width: "auto", cellsRenderer: celRendering, cellsAlign: 'center', sortable: false, filterable:false }
+                        ]
+                    }
+                );
+            $("#medecin").addClass("active");
+        });
+    </script>
+}

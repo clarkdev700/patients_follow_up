@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Harvest.Chosen</id>
+    <version>1.4.2</version>
+    <title>Harvest.Chosen</title>
+    <authors>Harvest</authors>
+    <owners>Harvest</owners>
+    <projectUrl>http://github.com/harvesthq/chosen</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Chosen is a library for making long, unwieldy select boxes more user friendly.
+
+jQuery support: 1.4+
+Prototype support: 1.7+
+For documentation, usage, and examples, see: http://harvesthq.github.io/chosen/
+
+For downloads, see: https://github.com/harvesthq/chosen/releases/</description>
+    <summary>Chosen is a library for making long, unwieldy select boxes more friendly. 
+http://harvesthq.github.io/chosen/</summary>
+    <releaseNotes>Chosen is now publishing a bower-friendly version of the compiled files at harvesthq/bower-chosen. The compiled files are automatically pushed there thanks to Travis CI magic. See the following commits if you're interested in the specifics:
+
+#2264 Add a way to build a public-facing Bower repo
+#2283 Get a base travis file up and atom
+#2284 Let Travis publish bower-chosen
+#2285 Use bundler to install gems
+#2286 [Travis] Allow detached head when parsing master ref.
+Random Bonus Bug Fix
+
+#2268 Ensure result-selected is applied immediately when selecting an element</releaseNotes>
+    <copyright>http://github.com/harvesthq/chosen</copyright>
+    <language>en-US</language>
+    <tags>Chosen Bootstrap Dropdown</tags>
+    <dependencies>
+      <dependency id="jQuery" version="1.4" />
+      <dependency id="PrototypeJS" version="1.7.1" />
+    </dependencies>
+  </metadata>
+</package>

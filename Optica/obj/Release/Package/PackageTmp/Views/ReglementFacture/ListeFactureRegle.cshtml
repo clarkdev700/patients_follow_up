@@ -1,0 +1,137 @@
+﻿@model IEnumerable<Optica.ViewModels.ReglementCaisse>
+@using System.Globalization
+@{
+    ViewBag.Title = "ListeFactureRegle";
+    ViewBag.Titre = "Journal de Caisse";
+}
+
+@section filedeNavigation {
+    <li><a href="#">Administration</a></li>
+    <li class="active">Journal de Caisse</li>
+}
+
+<h3>@*ViewBag.Titre*@</h3>
+<div class="box box-primary">
+    <div class="box-header"></div>
+    <div class="box-body">
+        <div class="row" style="margin-bottom:15px;">
+            <div class="pull-left">
+                @using (Html.BeginForm("", "", FormMethod.Post, new { @class = "form-inline" }))
+                {
+                    <div class="form-group col-xs-6">
+                        @Html.Label("Debut")
+                        <input type="date" value="@ViewBag.deb.ToString("yyyy-MM-01")" class="form-control" name="deb" id="deb" />
+                    </div>
+                    <div class="form-group col-xs-5">
+                        @Html.Label("Fin")
+                        <input type="date" value="@ViewBag.deb.ToString("yyyy-MM-dd")" class="form-control" name="end" id="end" />
+                    </div>
+                    <div class="form-group col-xs-1">
+                        <button type="button" id="btnValider" class="btn btn-sm">Valider</button>
+                    </div>
+                }
+            </div>
+            
+        </div><!-- Zone de Recherche-->
+        <div class="row">
+            <div class="pull-right" style="margin-top:15px;">
+                <div class="col-sm-8">
+                    <div class="row">
+                        <button class="btn btn-sm btn-primary" id="btn_print"><i class="glyphicon glyphicon-print"></i> Imprimer</button>
+                    </div>
+                    <div class="row">
+                        <div class="row" hidden id="ajaxLoad">
+                            <img src="~/Datadir/ajax-loader.gif" width="80" />
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Nom patient</th>
+                        <th>R&eacute;f&eacute;rence</th>
+                        <th>Montant</th>
+                        <th>Mode Reglement</th>
+                        <th>Source Reglement</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="4">Montant Regl&eacute;</th>
+                        <th colspan="2" class="pull-right" id="footerMtt">0</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#administration").addClass("active");
+            $("#lfr").addClass("active");
+            $("#btnValider").click(function () {
+                var rep = '', footMtt = 0;
+                $.ajax({
+                    url: "@Url.RouteUrl("_ListeFactureRegle")",
+                    type:"GET",
+                    data:{deb:$("#deb").val(), end: $("#end").val()},
+                    dataType:"json",
+                    success: function (data) {
+                        if (data[0].fact.length == 0)
+                        {
+                            rep = '<tr class="text-danger"><td colspan="6"  valign="middle" align="center"><em>Aucune facture reglée au cours de cette periode.</em></td></tr>';
+                        } else
+                        {
+                            $.each(data[0].fact, function (key, val) {
+                                rep += '<tr>' +
+                                    '<td>' + val.DateT + '</td>' +
+                                    '<td>' + val.NomPatient + '</td>' +
+                                    '<td>Ref#' + val.NumFacture + '</td>' +
+                                    '<td>' + val.Montant + '</td>' +
+                                    '<td>' + val.ModeReglement + '</td>' +
+                                    '<td>' + val.SourceReglement + '</td></tr>';
+                            });
+                            footMtt = data[0].Mtt;
+                        }
+                        $("tbody").html(''); $("#footerMtt").html('');
+                        $("tbody").html(rep); $("#footerMtt").html(footMtt);
+                    },
+                    error: function() {
+                        alert("Une erreur s'est produite.\n Veuillez ressayer plus tard.");
+                    }
+                });
+            });
+
+            $("#btn_print").click(function () {
+                alert("Génération de rapport en cours.\ Veuillez patienter un instant.");
+                $("#ajaxLoad").show();
+                    $.ajax({
+                        url:"@Url.RouteUrl("_ListeFactureRegle")",
+                        type:"GET",
+                        data:{deb:$("#deb").val(), end:$("#end").val(), print:"print"},
+                        dataType:"json",
+                        success: function (data) {
+                            $("#ajaxLoad").hide();
+                            if (data.qState == "OK")
+                            {
+                                @{
+                                    @*var filePath = Server.MapPath(System.IO.Path.Combine("~/Datadir/", "TraitementReport.pdf"));*@
+                                }
+                                window.open("../DataDir/caisseReport.pdf");
+                            } else { alert("Aucun Etat disponible à imprimer");}
+                    },
+                    error: function() {
+                        alert("Une erreur s'est produite veuillez ressayer plus tard");
+                        $("#ajaxLoad").hide();
+                    }
+                });
+            });
+        });
+    </script>
+}

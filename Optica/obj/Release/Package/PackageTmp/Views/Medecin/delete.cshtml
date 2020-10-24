@@ -1,0 +1,72 @@
+﻿
+@model Optica.Models.Medecin
+@{
+    ViewBag.Title = "delete";
+    ViewBag.Titre = "Medecin";
+    string titre = "Supprimer un medecin";
+}
+
+@section filedeNavigation {
+    <li><a href="@Url.RouteUrl("__listeMedecin")">Patient</a></li>
+    <li class="active">@titre</li>
+}
+
+<div class="box box-primary">
+    <div class="box-header">
+        <h4><u>@titre</u></h4>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-9"></div>
+            <div class="col-sm-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h5 class="panel-title">Medecin</h5></div>
+                    <div class="panel-body" style="padding:5px 0;">
+                        <div class="row">
+                            <span class="col-xs-5">N&ordm; matr.</span>
+                            <span>@Model.NumMat</span>
+                        </div>
+                        <div class="row">
+                            <span class="col-xs-5">Nom</span>
+                            <span>@Model.Nom &nbsp; @Model.Prenoms</span>
+                        </div>
+                        <div class="row">
+                            <span class="col-xs-5">Contact</span>
+                            <span>@Model.Contact</span>
+                        </div>
+                        <div class="row">
+                            <span class="col-xs-5">Adresse</span>
+                            <span>-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            @using (Html.BeginForm("Delete", "Medecin", new { id = Model.Id }, FormMethod.Post, new { }))
+            {
+                <p class="alert alert-danger">
+                    Vous &ecirc;tes sur le point de supprimer le medecin <strong>@Model.Nom &nbsp; @Model.Prenoms.</strong>
+                    Tous les informations du medecin seront perdus. Voulez-vous vraiment proceder &agrave; la suppression?
+                </p>
+                <div class="form-group">
+                    <input type="submit" value="Oui" class="btn btn-default btn-flat" />
+                    <a href="@Url.RouteUrl("__listeMedecin")" class="btn btn-default btn-flat">Non</a>
+                </div>
+
+            }
+
+
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#medecin").addClass("active");
+        });
+    </script>
+}
+
+

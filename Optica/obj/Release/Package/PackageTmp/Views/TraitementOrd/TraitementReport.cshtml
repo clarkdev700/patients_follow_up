@@ -1,0 +1,100 @@
+﻿@model Optica.ViewModels.TraitementReport
+@{
+    ViewBag.Title = "TraitementReport";
+    Layout = null;
+    var nbpage = (decimal) Model.Traitements.Count / 18;
+    nbpage = Math.Ceiling(nbpage);
+    
+}
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="col-lg-offset-1 col-lg-11" style="margin:0 95px;">
+            <div class="row">
+                
+                @{
+                    int i = 0, x = 0;
+                    while (i < nbpage)
+                    {
+                        <h4 class="text-center"><u>Etat du journal de traitement du @Model.DateDebut au @Model.DateFin </u></h4>
+                        <table class="table table-bordered table-condensed table-striped" cellspacing="5" cellpadding="5">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Nom patient</th>
+                                    <th>Facture</th>
+                                    <th colspan="2">Acte medical</th>
+                                    <th colspan="4">Montant</th>
+                                    @*<th>Nom medecin Exec.</th>
+                                    <th>Medecin Tr.</th>*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (var j = x; j < Model.Traitements.Count; j++)
+                                {
+                                    var style = @Model.Traitements[j].Statut == "Annuler" ? "background-color:#f28a8a;" : "";
+                                    <tr style="@style">
+                                        <td>@Model.Traitements[j].DateTraitement.ToString("dd/MM/yyyy")</td>
+                                        <td>@Model.Traitements[j].NomPatient</td>
+                                        <td>Ref#@Model.Traitements[j].NumeroFacture</td>
+                                        <td colspan="2">
+                                            @if (Model.Traitements[j].ActeMedicaux.Count > 0)
+                                            {
+                                                foreach (var actM in Model.Traitements[j].ActeMedicaux)
+                                                {
+                                                    @actM;
+                                                }
+                                            }
+                                        </td>
+                                        <td colspan="4">
+                                            @*<table cellspacing="15" cellpadding="5" width="90">
+                                                <thead><tr><th>Ass.</th><th>Patient</th></tr></thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>@Model.Traitements[j].MontantAssurance</td>
+                                                        <td>@Model.Traitements[j].MontantPatient</td>
+                                                    </tr>
+                                                </tbody>
+                                             </table>*@
+                                            <div><span class="col-xs-6">Ass.:&nbsp;&nbsp;</span><span> @Model.Traitements[j].MontantAssurance</span></div>
+                                            <div><span class="col-xs-6">Pat.:&nbsp;&nbsp;</span><span> @Model.Traitements[j].MontantPatient</span></div>
+                                        </td>
+                                        @*<td>@Model.Traitements[j].NomMedecin</td>
+                                        <td>@Model.Traitements[j].NomMedecinRecommande</td>*@
+                                    </tr>
+                                    if (j > 0 && j % 18 == 0)
+                                    {
+                                        x = j + 1;
+                                        break;
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                        i++;
+                        if ((nbpage - i) > 0)
+                        {
+                            <div style="page-break-after: always; border:none;"></div>
+                        }
+                    }
+                }
+            </div>
+            <div class="row">
+                <p>
+                    <span>Total Charge Assurance : </span><span><strong>@Model.MontantAssurance FCFA</strong> </span>
+                </p>
+                <p style="">
+                    <span>Total charge patient :</span><span><strong>@Model.MontantPatient FCFA</strong> </span> 
+                </p>
+            </div>
+        </div>
+          
+</body>
+</html>
+

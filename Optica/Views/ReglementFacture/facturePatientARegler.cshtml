@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "Factures de patient en attente de règlement";
+    @*ViewBag.Titre = "Factures de patient en entente de règlement";*@
+}
+
+@section filedeNavigation {
+    <li><a href="#">Administration</a></li>
+    <li class="active">Factures de patients &agrave; r&eacute;gler</li>
+    }
+
+<div class="box box-primary">
+    <div class="box-header"><h4 style="text-decoration:underline;">Factures de patient en attente de règlement</h4></div>
+    <div class="box-body">
+        <div class="row">
+            <table class="table table-responsive table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Nom &amp; prenoms patient</th>
+                        <th>Num Facture</th>
+                        <th>Montant</th>
+                        <th>Reste à payer</th>
+                        <th>Règlement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{float mtt = 0; float rst = 0;}
+                    @foreach (Optica.Models.Traitement t in ViewBag.ListeFact)
+                    {
+                        <tr>
+                            <td>@t.DateTrait.ToString("dd/MM/yyyy")</td>
+                            <td>@(t.DossierPat.Patient.Nom + " " + t.DossierPat.Patient.Prenom)</td>
+                            <td>@("Ref#" + t.DateTrait.ToString("dd"+t.Id+"MM"))</td>
+                            <td>@t.PrixOrd.ToString("N0", System.Globalization.CultureInfo.CurrentCulture)</td>
+                            @{ rst = t.PrixOrd - t.MontantPaye;}
+                            <td>@rst.ToString("N0", System.Globalization.CultureInfo.CurrentCulture)</td>
+                            <td>@Html.ActionLink("Regler", "Add", "ReglementFacture", new { id = t.Id }, new { })</td>
+                        </tr>
+                        mtt += (t.PrixOrd - t.MontantPaye);
+                    }
+                </tbody>
+                <tfoot>
+                    <tr><th colspan="4">Montant Total</th><th colspan="2">@mtt.ToString("N0", System.Globalization.CultureInfo.CurrentCulture)</th></tr>
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+@*<div class="row">
+    <div class="col-sm-4">
+        <h4>Facture de patient en entente de règlement</h4>
+        <hr />
+    </div>
+
+</div>*@
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#administration").addClass("active");
+            $("#fpar").addClass("active");
+        });
+    </script>
+}
+

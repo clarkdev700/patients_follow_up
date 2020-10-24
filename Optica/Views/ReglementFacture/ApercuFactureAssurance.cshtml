@@ -1,0 +1,72 @@
+﻿@model Optica.Models.Traitement
+@{
+    ViewBag.Title = "ApercuFactureAssurance";
+}
+
+<div class="box box-primary">
+    <div class="box-header"></div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-1">
+                <img src="#" width="50" height="30" title="logo" alt="logo" />
+            </div>
+            <div class="col-sm-3">
+                <span>Nom du cabinet</span><br />
+                <span>Description de service</span> &nbsp;-&nbsp;<span>Adresse</span>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <h4 style="text-decoration:underline;font-style:italic">Ref#@Model.Id @Model.DateTrait.ToString("- MMdd/yy")</h4><br />
+            <div class="col-sm-5">
+                <div class="row">
+                    <span class="col-xs-4">Edit&eacute; le </span>
+                    <span>@Model.DateTrait.ToString("dd/MM/yyyy")</span>
+                </div>
+                <div class="row">
+                    <span class="col-xs-4">N° matricule</span>
+                    <span>@Model.DossierPat.Patient.NumMat</span>
+                </div>
+                <div class="row">
+                    <span class="col-xs-4">Nom</span>
+                    <span>@(Model.DossierPat.Patient.Nom + " " + @Model.DossierPat.Patient.Prenom)</span>
+                </div>
+                <div class="row">
+                    <span class="col-xs-4">Contact</span>
+                    <span>@Model.DossierPat.Patient.Contact</span>
+                </div>
+                <div class="row">
+                    <span class="col-xs-4">Statut</span>
+                    @if (Model.AssuranceId > 0)
+                    {
+                        <label class="col-xs-3"><input type="checkbox" checked disabled />Assur&eacute;</label>
+                        <label><input type="checkbox" disabled />Non Assur&eacute;(e)</label>
+                    }
+                    else
+                    {
+                        <label class="col-xs-3"><input type="checkbox" disabled />Assur&eacute;</label>
+                        <label><input type="checkbox" checked disabled />Non Assur&eacute;(e)</label>
+                    }
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <h4 style="text-decoration:underline; font-style:italic;font-family:'Times New Roman'">Prestation</h4>
+                <div class="row">
+                    <h4 style="font-size:medium; font-style:italic; font-weight:bold;">
+                        <span class="col-xs-8">@Model.ActeMedical.Designation</span>
+                        <span>@Model.PrixAssur</span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#patient").addClass("active");
+        });
+    </script>
+}
+
+

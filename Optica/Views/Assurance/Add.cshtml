@@ -1,0 +1,67 @@
+﻿@model Optica.Models.Assurance
+@{
+    ViewBag.Title = "Add";
+    ViewBag.Titre = "Assurance";
+}
+@{
+    string Action = "Add";
+    string titre = "Nouveau";
+    if (Model != null && Model.Nom != null)
+    {
+        Action = "Update";
+        titre = "Edition"; 
+    }
+}
+
+@section filedeNavigation {
+        <li><a href="#">Param&egrave;tres</a></li>
+        <li><a href="#">Assurance</a></li>
+        <li class="active">@titre</li>
+    }
+
+<div class="row">
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 style="text-decoration:underline; font-style:italic">@titre</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                @using (Html.BeginForm(Action, "Assurance",FormMethod.Post))
+                    {
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                @Html.Label("Code") @Html.ValidationMessage("Code", new { @class = "text-danger" })
+                                @Html.TextBox("Code", Model.Code, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                @Html.Label("Nom") @Html.ValidationMessage("Nom", new { @class = "text-danger" })
+                                @Html.TextBox("Nom", Model.Nom, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group"></div>
+                        </div>
+                        <div class="col-sm-5 pull-right">
+                            <input type="submit" class="btn btn-sm" value="Valider" />
+                            <input type="reset" class="btn btn-sm" value="Annuler" />
+                        </div>
+                }
+            </div>
+        </div>
+    </div>
+    </div>
+    <hr>
+<div class="row">
+    <p>@Html.ActionLink("Nouveau", "Add", "Assurance", new { }, new { @class="btn btn-primary btn-flat"})</p>
+    @Html.Partial("listeAssurance", (IEnumerable<Optica.Models.Assurance>) ViewBag.assurances)
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#parametres").addClass("active");
+            $("#assurance").addClass("active");
+        });
+    </script>
+}

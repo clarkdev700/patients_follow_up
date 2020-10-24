@@ -1,0 +1,143 @@
+﻿@model Optica.ViewModels.PatientFacture
+@using System.Globalization
+@{
+    ViewBag.Title = "FacturePatient";
+    Layout = "~/Views/Shared/_EnteteFacture.cshtml";
+}
+
+@*section EnteteAdresse {
+        @Html.Partial("~/Views/Shared/_EnteteAdressePartial.cshtml")
+    }*@
+
+@*section EnteteDroite {
+    @Html.Partial("~/Views/Shared/_EntetePartial.cshtml", Model)
+}*@
+
+@{
+    int i = 0;
+}
+
+@while (i < 2)
+{
+       //**********************************************//
+       <div class="row">
+           <div class="col-sm-offset-2 col-sm-10" style="font-size:14px;">
+               <div class="row text-center">
+                   @Html.Partial("~/Views/Shared/_EnteteAdressePartial.cshtml")
+                   <div class="col-sm-4" style="/*float:left;width:41%;margin-left:2%;*/">
+                       @Html.Partial("~/Views/Shared/_EntetePartial.cshtml", Model)
+                   </div>
+               </div>
+           </div>
+       </div>
+       <hr class="col-sm-offset-1" />
+
+       //*********************************************//
+       <div class="row">
+           <h4 class="text-center col-sm-11" style="font-size:19px;"><u>RE&Ccedil;U DE CAISSE N&ordm; @Model.NumRecu</u></h4>
+       </div>
+       <div class="row" style="margin-top:5px;height:475px;font-size:19px;">
+           @{ string titre = Enum.Format(typeof(Optica.Models.Titre), Model.Patient.Titre, "g");}
+           <div class="col-sm-12">
+               <div class="row">
+                   <div class="col-xs-8">
+                       <div class="row">
+                           <span class="col-xs-4">N&ordm; matricule :</span>
+                           <span><strong>@Model.Patient.NumMat</strong></span>
+                       </div>
+                       <div class="row">
+                           <span class="col-xs-4">Nom :</span>
+                           <span><strong>@titre &nbsp; @Model.Patient.Nom &nbsp;@Model.Patient.Prenom </strong></span>
+                       </div>
+                       <div class="row">
+                           <span class="col-xs-4">Contact :</span>
+                           <span><strong>@Model.Patient.Contact</strong></span>
+                       </div>
+                       <div class="row">
+                           <span class="col-xs-4">Assurance :</span>
+                           @if (Model.Assurance != null)
+                           {
+                               <span><strong>@Model.Assurance.Nom</strong></span>
+                           }
+                           else
+                           {
+                               <span>-</span>
+                           }
+
+                       </div>
+                       <div class="row">
+                           <span class="col-xs-4">Acte medical :</span>
+                           <span>
+                               @{
+                                   int ArrLeng = 0, index = 0;
+                                   const char space = ',';
+                                   var acteArr = Model.ActeMedicaux.ToArray();
+                                   ArrLeng = acteArr.Length;
+                                   if (ArrLeng > 0)
+                                   {
+                                       while (index < ArrLeng)
+                                       {
+                                           <strong>@acteArr[index].ActeMedical.Code</strong>
+                                           if (ArrLeng - index > 1)
+                                           {
+                                               @space;
+                                           }
+                                           index++;
+                                       }
+                                   }
+                               }
+                           </span>
+                       </div>
+                   </div>
+                   <div class="col-xs-4">
+                       <div class="row">
+                           @if (Model.Payements.Count > 1)
+                           {
+                               <h5><strong><u>Historique de r&egrave;glement</u></strong></h5>
+                               <ul class="list-unstyled" style="padding-left:6px;">
+                                   @foreach (var p in Model.Payements.OrderByDescending(x => x.Id))
+                                   {
+                                       if (p.Id != Model.Payement.Id)
+                                       {
+                                           <li>@p.DatePaye.ToString("dd/MM/yyyy") &nbsp;&nbsp; <strong>@p.MontantPaye.ToString("N0", CultureInfo.CurrentCulture)</strong> (@p.TypePaye.Substring(0, 2).ToUpper())</li>
+                                       }
+                                   }
+                               </ul>
+                           }
+                       </div>
+                   </div>
+               </div>
+               <hr />
+               <div class="row">
+                   <div class="col-xs-4 pad"><span>Montant global :</span>&nbsp;&nbsp;<span><strong>@Model.MontantGlobale.ToString("N0", CultureInfo.CurrentCulture) FCFA</strong></span></div>
+                   <div class="col-xs-4 pad"><span>Montant patient :</span>&nbsp;&nbsp;<span><strong>@Model.MontantPatient.ToString("N0", CultureInfo.CurrentCulture) FCFA</strong></span></div>
+                   <div class="col-xs-4 pad" style="margin-right:0px;"><span>Montant assureur :</span>&nbsp;&nbsp;<span><strong>@Model.MontantAssurance.ToString("N0", CultureInfo.CurrentCulture) FCFA</strong></span></div>
+               </div><hr />
+               <div class="row">
+                   <div class="col-xs-8 pad"><span>Pay&eacute; :</span>&nbsp;&nbsp;<span><strong>@Model.Payement.MontantPaye.ToString("N0", CultureInfo.CurrentCulture) FCFA</strong> (@Model.Payement.TypePaye &nbsp; @Model.Payement.InfoCheque)</span></div>
+                   <div class="col-xs-4 pad"><span>Reste &agrave; payer :</span>&nbsp;&nbsp;<span><strong>@Model.ResteApayer.ToString("N0", CultureInfo.CurrentCulture) FCFA</strong></span></div>
+               </div>
+               <hr />
+               <div class="row" style="margin-top:20px;">
+                   <div class="col-sm-offset-2 col-sm-4">
+                       <span style="font-style:italic"><strong>@Model.StatutReglement.ToUpper()</strong></span>
+                   </div>
+                   <div class="col-sm-3 pull-right">
+                       <div class="row" style="margin-top: 60px;">
+                           <h4 style="">Signature</h4>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           @*<div class="col-sm-2"></div>*@
+       </div>
+       //////
+       i++;
+       if (i == 1)
+       {
+       <hr style="margin-bottom:60px;" class="col-sm-offset-1" />
+       }
+
+    
+}
+

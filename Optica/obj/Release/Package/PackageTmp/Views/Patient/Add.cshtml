@@ -1,0 +1,175 @@
+﻿@model Optica.Models.Patient
+@{
+    ViewBag.Title = "Add";
+    ViewBag.Titre = "Patient";
+}
+
+@{
+    string Action = "Add";
+    string titre = "Nouveau";
+    if (Model != null && Model.Nom != null)
+    {
+        Action = "Update";
+        titre = "Edition";
+    }
+}
+
+@section filedeNavigation {
+        <li><a href="@Url.RouteUrl("__patientIndex")">Patient</a></li>
+        <li class="active">@titre</li>
+    }
+
+
+<div class="row">
+    
+    <div class="col-md-11">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 style="text-decoration:underline; font-style:italic">@titre</h3>
+            </div>
+            <div class="box-body">
+                <div class="col-sm-offset-1"></div>
+                <div class="col-sm-10">
+                    @using (Html.BeginForm(Action, "Patient", FormMethod.Post))
+                    {
+                        <div class="row">
+                            <div class="form-group col-sm-5">
+                                @Html.Label("N° Matricule")
+                                @Html.TextBox("NumMat", Model.NumMat, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                            <div class="form-group col-sm-5">
+                                @Html.Label("Titre")
+                                @Html.DropDownList("Model.Titre", (SelectList)ViewBag.Titres, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-5">
+                                @Html.Label("Nom") @Html.ValidationMessage("Nom", new { @class = "text-danger" })
+                                @Html.TextBox("Nom", Model.Nom, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group col-sm-5">
+                                @Html.Label("Prenom") @Html.ValidationMessage("Prenom", new { @class = "text-danger" })
+                                @Html.TextBox("Prenom", Model.Prenom, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-5">
+                                @Html.Label("Date naissance")
+                                @if (Model.DateNaissance != null)
+                                {
+                                    <input type="date" value="@Model.DateNaissance.Value.ToString("yyyy-MM-dd")" name="DateNaissance" id="dateNaissance" class="form-control" />
+                                }
+                                else
+                                {
+                                    <input type="date" value="" name="DateNaissance" id="dateNaissance" class="form-control" />
+                                }
+                                
+                            </div>
+                            <div class="form-group col-sm-5">
+                                @Html.Label("Lieu de naissance")
+                                @Html.TextBox("LieuNaisance", Model.LieuNaissance, new { @class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-5">
+                                <label>Sexe:</label>
+                                <select id="sexe" class="form-control" name="Sexe">
+                                    @{
+                                        if (Model != null && Model.Sexe == "M") 
+                                        {
+                                            <option value="M" selected>Masculin</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="M">Masculin</option>
+                                        }
+
+                                        if (Model != null && Model.Sexe == "F")
+                                        {
+                                            <option value="F" selected>Feminin</option>
+                                        }
+                                        else
+                                        {
+                                          <option value="F">Feminin</option>  
+                                        }
+                                    }
+                                    
+                                    
+                                </select>
+                                @*<div class="row">
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label>
+                                                @if (Model != null && Model.Sexe == "M")
+                                                {
+                                                    <input type="radio" value="M" name="Sexe" checked />
+                                                }
+                                                else
+                                                {
+                                                    <input type="radio" value="M" name="Sexe" />
+                                                }
+                                                M
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <div class="radio">
+                                            <label>
+                                                @if (Model != null && Model.Sexe == "F")
+                                                {
+                                                    <input type="radio" value="F" name="Sexe" checked />
+                                                }
+                                                else
+                                                {
+                                                    <input type="radio" value="F" name="Sexe" />
+                                                }
+                                                F
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>*@
+                            </div>
+                            <div class="form-group col-sm-5">
+                                @Html.Label("Profession")
+                                @Html.TextBox("Profession", Model.Profession, new { @class = "form-control"})
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-5">
+                                @Html.Label("Contact")
+                                @Html.TextBox("Contact", Model.Contact, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group col-sm-5">
+                                @Html.Label("E-mail")
+                                @Html.TextBox("Email", Model.Email, new { @class = "form-control" })
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-5">
+                                @Html.Label("Adresse")
+                                @Html.TextArea("Adresse", Model.Adresse, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-offset-6">
+                                <input type="submit" value="Valider" class="btn btn-sm" />
+                                <a href="@Url.RouteUrl("__patientIndex")" class="btn btn-sm btn-default">Annuler</a>
+                            </div>
+                        </div>
+                        
+                    }
+                </div>
+                
+            </div>
+            <div class="box-footer clearfix no-border"></div>
+        </div>
+    </div> 
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#patient").addClass("active");
+        });
+    </script>
+    }

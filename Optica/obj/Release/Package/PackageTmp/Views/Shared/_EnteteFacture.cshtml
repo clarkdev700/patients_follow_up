@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = "_EnteteFacture";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    @Styles.Render("~/Content/css")
+    <style type="text/css">
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        hr {
+            margin-top:auto;
+            margin-bottom:auto;
+        }
+        .adresseTxt {
+            font-size:14px;
+            text-align:left;
+        }
+        .pad {
+            padding-left:3px;
+            padding-right:0px;
+        }
+    </style>
+</head>
+
+
+<body style="">
+    <div class="container-fluid" style="/*margin-top:-40px;*/">
+        <div class="row">
+            @*<div class="col-md-1"></div>*@
+            <div class="col-md-11">
+                <!--Head-->
+                
+                @*<div class="row">
+                    <div class="col-sm-offset-2 col-sm-10" style="">
+                        <div class="row text-center">
+                            <div class="row" style="float:left; margin-left:6%">
+                                <img src="../../../Datadir/LogoOptiqueOttica.png" width="55" height="35" class="" style="clear:both" />
+                            </div>
+                            <div class="row" style="float: left; margin-left: 2%;">
+                                <h4 class="" style="margin-top:0px; margin-bottom:0px; font-size:small">CABINET MEDICAL D'OPHTALMOLOGIE</h4>
+                                <h4 class="" style="/*font-size:30px;*/margin-top:0px; margin-bottom:0px; font-size:small"><strong>MAISON D&prime;ITALIE</strong></h4>
+                                <address style="margin-bottom:0px; line-height:1;">
+                                    <span class="col-sm-12 text-center adresseTxt">Immeuble RAMCO TogoCellulaire</span><br />
+                                    <span class="col-sm-12 text-center adresseTxt">Avenue du 24 janvier 05 BP 263</span><br />
+                                    <span class="col-sm-12 text-center adresseTxt">Tel. 22 20 90 80</span><br />
+                                    <span class="col-sm-12 text-center adresseTxt">Arr&ecirc;t&eacute; N&ordm;0028/2012/MS/CAB/DGS/DES</span>
+                                </address>
+                            </div>
+                            <div class="col-sm-4" style="/*float:left;width:41%;margin-left:2%;*/">
+                                @RenderSection("EnteteDroite", required: false)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />*@
+                <!--Content-->
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
